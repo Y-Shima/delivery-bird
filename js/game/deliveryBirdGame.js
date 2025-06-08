@@ -558,7 +558,6 @@ class DeliveryBirdGame {
         this.lastUpdateTime = Date.now();
         this.timerInterval = setInterval(() => this.updateTimer(), 100); // より頻繁に時間をチェック
     }
-    }
 
     returnToTitle() {
         // ゲーム状態をリセット
@@ -609,7 +608,6 @@ class DeliveryBirdGame {
                 startScreen.style.display = 'flex';
             }
         }
-    }
     }
 
     update() {
@@ -771,6 +769,4 @@ class DeliveryBirdGame {
         this.gameState.selectedDetourIndex = 0;
         this.uiManager.hideDetourModal();
     }
-
-    // 他のメソッドは次のファイルで続く...
 }
