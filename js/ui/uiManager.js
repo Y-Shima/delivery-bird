@@ -39,8 +39,16 @@ class UIManager {
         const scoreValue = document.getElementById('arrival-score-value');
         
         // 都市名を表示（翻訳があれば翻訳版を使用）
-        const translatedName = t(`cities.${city.name}`) || city.name;
-        cityName.textContent = translatedName;
+        const translatedName = translateCity(city.name);
+        
+        // ノーマルモードでは到着時に国名を表示、ビギナーモードでは都市名のみ
+        let displayName = translatedName;
+        if (currentGameMode.id === 'normal') {
+            const countryName = translateCountry(city.country);
+            displayName = `${translatedName}, ${countryName}`;
+        }
+        
+        cityName.textContent = displayName;
         
         // 都市説明を表示
         const description = t(`cityDescriptions.${city.name}`) || `${city.name}の美しい都市です。`;
@@ -66,7 +74,7 @@ class UIManager {
 
     updateUI() {
         document.getElementById('current-score').textContent = this.gameState.score;
-        document.getElementById('hi-score').textContent = this.gameState.ranking[0].score;
+        document.getElementById('hi-score').textContent = this.gameState.hiScore;
         
         this.updateTimeMeter();
         this.updateSpeedMeter();
@@ -136,10 +144,15 @@ class UIManager {
             
             if (destination) {
                 div.classList.add('occupied');
+                
+                // ゲームモードに応じて国名表示を制御
+                const cityName = translateCity(destination.name);
+                const countryName = currentGameMode.showCountryNames ? `, ${translateCountry(destination.country)}` : '';
+                
                 div.innerHTML = `
                     <div class="slot-number">${index + 1}</div>
                     <div class="destination-info">
-                        <div class="destination-name">${translateCity(destination.name)}</div>
+                        <div class="destination-name">${cityName}${countryName}</div>
                         <div class="destination-reward">$${destination.reward}</div>
                     </div>
                 `;
@@ -247,27 +260,17 @@ class UIManager {
         document.getElementById('detour-modal').classList.add('hidden');
     }
 
-    showGameOverScreen(rankPosition) {
-        console.log('Showing unified game over screen, rank position:', rankPosition); // デバッグ用
+    showGameOverScreen() {
+        console.log('Showing game over screen'); // デバッグ用
         
         const gameOverScreen = document.getElementById('game-over-screen');
-        const nameEntrySection = document.getElementById('name-entry-section');
         
         // ゲームオーバー画面のテキストを更新
         document.querySelector('#game-over-screen h2').textContent = t('game.gameOver');
         document.getElementById('final-score').innerHTML = `${t('game.finalScore')}: <span id="final-score-value">${this.gameState.score}</span>`;
-        document.querySelector('#ranking-section h3').textContent = t('game.ranking');
         
-        this.updateRankingDisplay();
-        
-        // 名前入力セクションの表示/非表示を制御
-        if (rankPosition !== -1) {
-            // ランクイン - 名前入力セクションを表示
-            nameEntrySection.classList.remove('hidden');
-        } else {
-            // ランク外 - 名前入力セクションを非表示
-            nameEntrySection.classList.add('hidden');
-        }
+        // HI-SCOREを更新
+        this.gameState.saveHiScore();
         
         // ゲームオーバー画面を表示
         gameOverScreen.classList.remove('hidden');
@@ -275,23 +278,8 @@ class UIManager {
         // フォーカスを確実にゲームオーバー画面に設定
         setTimeout(() => {
             gameOverScreen.focus();
-            console.log('Unified game over screen focused and ready for input'); // デバッグ用
+            console.log('Game over screen focused and ready for input'); // デバッグ用
         }, 100);
-    }
-
-    updateRankingDisplay() {
-        const rankingList = document.getElementById('ranking-list');
-        rankingList.innerHTML = '';
-        
-        this.gameState.ranking.forEach((entry, index) => {
-            const div = document.createElement('div');
-            div.className = 'ranking-item';
-            div.innerHTML = `
-                <span>${index + 1}. ${entry.name}</span>
-                <span>${entry.score}</span>
-            `;
-            rankingList.appendChild(div);
-        });
     }
 
 }

@@ -56,14 +56,17 @@ class TitleScreen {
         switch(e.code) {
             case 'ArrowLeft':
                 e.preventDefault();
+                e.stopPropagation();
                 this.selectMode('beginner');
                 break;
             case 'ArrowRight':
                 e.preventDefault();
+                e.stopPropagation();
                 this.selectMode('normal');
                 break;
             case 'Space':
                 e.preventDefault();
+                e.stopPropagation();
                 this.startGame();
                 break;
         }
@@ -134,10 +137,12 @@ class TitleScreen {
         // タイトル画面を非表示
         document.getElementById('title-screen').style.display = 'none';
         
-        // ゲーム開始
-        if (window.deliveryBirdGame) {
-            window.deliveryBirdGame.startGame();
-        }
+        // 少し遅延してからゲーム開始（キーイベントの重複を防ぐ）
+        setTimeout(() => {
+            if (window.deliveryBirdGame) {
+                window.deliveryBirdGame.startGame();
+            }
+        }, 100);
     }
     
     show() {

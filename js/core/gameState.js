@@ -32,29 +32,19 @@ class GameState {
         };
         this.enemies = [];
         this.powerUps = [];
-        this.ranking = this.loadRanking();
+        this.hiScore = this.loadHiScore();
     }
 
-    loadRanking() {
-        const defaultRanking = [
-            { name: "ACE", score: 1000 },
-            { name: "PRO", score: 900 },
-            { name: "TOP", score: 800 },
-            { name: "GOD", score: 700 },
-            { name: "WIN", score: 600 },
-            { name: "FLY", score: 500 },
-            { name: "SKY", score: 400 },
-            { name: "AIR", score: 300 },
-            { name: "JET", score: 200 },
-            { name: "NEW", score: 0 }
-        ];
-        
-        const saved = localStorage.getItem('delivery-bird-ranking');
-        return saved ? JSON.parse(saved) : defaultRanking;
+    loadHiScore() {
+        const saved = localStorage.getItem('delivery-bird-hiscore');
+        return saved ? parseInt(saved, 10) : 0;
     }
 
-    saveRanking() {
-        localStorage.setItem('delivery-bird-ranking', JSON.stringify(this.ranking));
+    saveHiScore() {
+        if (this.score > this.hiScore) {
+            this.hiScore = this.score;
+            localStorage.setItem('delivery-bird-hiscore', this.hiScore.toString());
+        }
     }
 
     reset() {

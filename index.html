@@ -98,28 +98,6 @@
             <h2>GAME OVER</h2>
             <div id="final-score">スコア: <span id="final-score-value">0</span></div>
             
-            <!-- 名前入力セクション（ランクイン時のみ表示） -->
-            <div id="name-entry-section" class="hidden">
-                <h3>ランクイン！名前を入力してください</h3>
-                <div class="name-display">
-                    <span id="char1" class="name-char active">A</span>
-                    <span id="char2" class="name-char">A</span>
-                    <span id="char3" class="name-char">A</span>
-                </div>
-                <div class="char-selector">
-                    <span>選択中: </span><span id="current-char">A</span>
-                </div>
-                <div class="name-entry-controls">
-                    <p>左右: 文字選択 | 上下: 位置移動 | スペース: 決定 | Enter: 完了</p>
-                </div>
-            </div>
-            
-            <!-- ランキング表示 -->
-            <div id="ranking-section">
-                <h3>ランキング</h3>
-                <div id="ranking-list"></div>
-            </div>
-            
             <!-- ボタン -->
             <div class="game-over-buttons">
                 <button id="restart-btn">もう一度プレイ</button>
@@ -233,7 +211,6 @@
     <script src="js/game/gameLogic.js"></script>
     <script src="js/game/deliveryBirdGame.js"></script>
     <script src="js/game/gameControls.js"></script>
-    <script src="js/game/nameEntry.js"></script>
     
     <!-- 外部ライブラリ -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>

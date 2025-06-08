@@ -17,7 +17,6 @@ const LANG_JA = {
         gameStart: "ゲーム開始",
         gameOver: "GAME OVER",
         finalScore: "スコア",
-        ranking: "ランキング",
         playAgain: "もう一度プレイ"
     },
     
@@ -25,9 +24,9 @@ const LANG_JA = {
     title: {
         modeTitle: "ゲームモード",
         modeBeginner: "ビギナー",
-        modeBeginnerDesc: "スコア登録されません",
+        modeBeginnerDesc: "国名表示あり・スコア登録なし",
         modeNormal: "ノーマル",
-        modeNormalDesc: "スコア登録されます",
+        modeNormalDesc: "到着時のみ国名表示・スコア登録あり",
         modeControls: "← → : モード選択",
         pushSpace: "PUSH SPACE"
     },
@@ -54,12 +53,6 @@ const LANG_JA = {
         rotate: "← → : 回転",
         speed: "↑ ↓ : スピード調整（0-5）",
         select: "スペース : 配達先選択"
-    },
-    
-    // 名前入力
-    nameEntry: {
-        title: "名前を入力してください",
-        controls: "左右: 文字選択 | スペース: 決定 | Enter: 完了"
     },
     
     // 都市名（翻訳）

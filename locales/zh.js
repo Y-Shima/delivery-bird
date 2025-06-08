@@ -17,7 +17,6 @@ const LANG_ZH = {
         gameStart: "开始游戏",
         gameOver: "游戏结束",
         finalScore: "得分",
-        ranking: "排行榜",
         playAgain: "再玩一次"
     },
     
@@ -25,9 +24,9 @@ const LANG_ZH = {
     title: {
         modeTitle: "游戏模式",
         modeBeginner: "初学者",
-        modeBeginnerDesc: "不保存分数",
+        modeBeginnerDesc: "显示国名・不保存分数",
         modeNormal: "普通",
-        modeNormalDesc: "保存分数",
+        modeNormalDesc: "仅到达时显示国名・保存分数",
         modeControls: "← → : 选择模式",
         pushSpace: "按空格键"
     },
@@ -54,12 +53,6 @@ const LANG_ZH = {
         rotate: "← → : 旋转",
         speed: "↑ ↓ : 速度调节（0-5）",
         select: "空格 : 选择目的地"
-    },
-    
-    // 姓名输入
-    nameEntry: {
-        title: "请输入您的姓名",
-        controls: "左右: 选择字符 | 空格: 确认 | 回车: 完成"
     },
     
     // 城市名（翻译）

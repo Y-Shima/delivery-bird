@@ -17,7 +17,6 @@ const LANG_EN = {
         gameStart: "Start Game",
         gameOver: "GAME OVER",
         finalScore: "Score",
-        ranking: "Ranking",
         playAgain: "Play Again"
     },
     
@@ -25,9 +24,9 @@ const LANG_EN = {
     title: {
         modeTitle: "Game Mode",
         modeBeginner: "Beginner",
-        modeBeginnerDesc: "Score will not be saved",
+        modeBeginnerDesc: "Country names shown・No score saving",
         modeNormal: "Normal",
-        modeNormalDesc: "Score will be saved",
+        modeNormalDesc: "Country names on arrival only・Score saving",
         modeControls: "← → : Select Mode",
         pushSpace: "PUSH SPACE"
     },
@@ -54,12 +53,6 @@ const LANG_EN = {
         rotate: "← → : Rotate",
         speed: "↑ ↓ : Speed (0-5)",
         select: "Space : Select destination"
-    },
-    
-    // Name entry
-    nameEntry: {
-        title: "Enter your name",
-        controls: "Left/Right: Select character | Space: Confirm | Enter: Complete"
     },
     
     // City names (translations)

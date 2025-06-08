@@ -173,30 +173,6 @@
     margin-bottom: 20px;
 }
 
-#ranking-list {
-    background: rgba(0, 0, 0, 0.3);
-    padding: 15px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-}
-
-.ranking-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 5px 0;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.ranking-item:last-child {
-    border-bottom: none;
-}
-
-.ranking-item.new-entry {
-    background: rgba(255, 215, 0, 0.3);
-    padding: 5px 10px;
-    border-radius: 5px;
-}
-
 /* 名前入力の改良 */
 .char-display {
     display: flex;
@@ -439,68 +415,6 @@ button:hover {
 #title-btn:hover {
     background: linear-gradient(135deg, #6495ED, #87CEEB);
     transform: translateY(-2px);
-}
-/* 名前入力セクション（ゲームオーバー画面内） */
-#name-entry-section {
-    margin: 20px 0;
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    border: 2px solid #FFD700;
-}
-
-#name-entry-section h3 {
-    color: #FFD700;
-    margin-bottom: 15px;
-    text-align: center;
-}
-
-.name-display {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin: 15px 0;
-}
-
-.name-char {
-    display: inline-block;
-    width: 40px;
-    height: 40px;
-    line-height: 40px;
-    text-align: center;
-    background: rgba(255, 255, 255, 0.2);
-    border: 2px solid #ccc;
-    border-radius: 5px;
-    font-size: 24px;
-    font-weight: bold;
-}
-
-.name-char.active {
-    border-color: #FFD700;
-    background: rgba(255, 215, 0, 0.3);
-}
-
-.char-selector {
-    text-align: center;
-    margin: 15px 0;
-    font-size: 18px;
-}
-
-#current-char {
-    font-weight: bold;
-    color: #FFD700;
-    font-size: 24px;
-    margin-left: 10px;
-}
-
-.name-entry-controls {
-    text-align: center;
-    margin-top: 15px;
-}
-
-.name-entry-controls p {
-    font-size: 14px;
-    color: #ccc;
 }
 
 .game-over-controls {

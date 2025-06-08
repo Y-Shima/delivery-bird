@@ -19,6 +19,7 @@ class DeliveryBirdGame {
         this.nameEntryState = null;
         this.detourSelection = 0; // 寄り道モーダルの選択状態（0-3）
         this.frameCount = 0; // フレームカウンター
+        this.ignoreKeyInput = false; // キー入力を一時的に無視するフラグ
         
         this.init();
     }
@@ -112,6 +113,16 @@ class DeliveryBirdGame {
     }
 
     handleKeyPress(e) {
+        // タイトル画面が表示されている場合は処理しない
+        if (document.getElementById('title-screen').style.display !== 'none') {
+            return;
+        }
+        
+        // キー入力を一時的に無視する場合は処理しない
+        if (this.ignoreKeyInput) {
+            return;
+        }
+        
         if (!this.gameState.isPlaying) {
             if (e.code === 'Space' || e.code === 'Enter') {
                 if (document.getElementById('start-screen').style.display !== 'none') {
@@ -127,13 +138,6 @@ class DeliveryBirdGame {
             if (e.code === 'Space' || e.code === 'Enter') {
                 this.uiManager.hideCityArrivalModal();
             }
-            return;
-        }
-
-        // 名前入力中の場合（統合画面内）
-        if (this.nameEntryState && !document.getElementById('name-entry-section').classList.contains('hidden')) {
-            console.log('Name entry key pressed:', e.code); // デバッグ用
-            this.handleNameEntryKeyPress(e);
             return;
         }
 
@@ -160,6 +164,7 @@ class DeliveryBirdGame {
         // 寄り道モーダルが開いている場合
         if (this.gameState.isDetourModalOpen) {
             e.preventDefault(); // デフォルト動作を防ぐ
+            e.stopPropagation(); // イベントの伝播を停止
             switch (e.code) {
                 case 'ArrowUp':
                     this.gameState.selectedDetourIndex = Math.max(0, this.gameState.selectedDetourIndex - 1);
@@ -183,6 +188,7 @@ class DeliveryBirdGame {
         // 配達先選択モーダルが開いている場合
         if (this.gameState.isDestinationModalOpen) {
             e.preventDefault(); // デフォルト動作を防ぐ
+            e.stopPropagation(); // イベントの伝播を停止
             switch (e.code) {
                 case 'ArrowUp':
                     this.gameState.selectedDestinationIndex = Math.max(0, this.gameState.selectedDestinationIndex - 1);
@@ -241,14 +247,6 @@ class DeliveryBirdGame {
                     this.gameState.timeLeft = 1;
                     this.gameState.score = 5000; // テスト用に高いスコアを設定してランクインをテスト
                     this.uiManager.updateUI();
-                }
-                break;
-            case 'KeyR': // Rキーでランキングリセット（テスト用）
-                if (this.gameState.isPlaying) {
-                    console.log('Test: Resetting ranking');
-                    localStorage.removeItem('delivery-bird-ranking');
-                    this.gameState.ranking = this.gameState.loadRanking();
-                    console.log('New ranking:', this.gameState.ranking);
                 }
                 break;
             case 'KeyE': // Eキーで敵との衝突テスト
@@ -311,6 +309,9 @@ class DeliveryBirdGame {
             uiPanel.style.visibility = 'visible';
         }
         
+        // キー入力を一時的に無視
+        this.ignoreKeyInput = true;
+        
         this.gameState.reset();
         this.gameState.isPlaying = true;
         this.gameState.visitedCities.clear();
@@ -326,8 +327,12 @@ class DeliveryBirdGame {
         // UIを更新
         this.uiManager.updateUI();
         
-        // 最初の配達先選択画面をすぐに表示
-        this.openDestinationModal();
+        // 最初の配達先選択画面を少し遅延して表示（キーイベントの重複を防ぐ）
+        setTimeout(() => {
+            this.openDestinationModal();
+            // キー入力の無視を解除
+            this.ignoreKeyInput = false;
+        }, 300);
         
         this.gameLoop = setInterval(() => this.update(), 1000 / 60); // 60 FPS
         this.timerInterval = setInterval(() => this.updateTimer(), 1000);
@@ -511,30 +516,8 @@ class DeliveryBirdGame {
         clearInterval(this.gameLoop);
         clearInterval(this.timerInterval);
 
-        // ランキングチェック（ゲームモードがスコア保存対応の場合のみ）
-        const finalScore = this.gameState.score;
-        let rankPosition = -1;
-        
-        if (currentGameMode.saveScore) {
-            rankPosition = this.gameState.ranking.findIndex(entry => finalScore > entry.score);
-            console.log('Final score:', finalScore); // デバッグ用
-            console.log('Rank position:', rankPosition); // デバッグ用
-            console.log('Current ranking:', this.gameState.ranking.map(r => r.score)); // デバッグ用
-        } else {
-            console.log('Beginner mode - score not saved'); // デバッグ用
-        }
-        
-        // 統合されたゲームオーバー画面を表示
-        this.uiManager.showGameOverScreen(rankPosition);
-        
-        if (rankPosition !== -1 && currentGameMode.saveScore) {
-            // ランクイン - 名前入力セクションを表示
-            console.log('Rank in detected, showing name entry section');
-            this.initNameEntry(rankPosition);
-        } else {
-            // ランク外またはビギナーモード - 名前入力セクションは非表示のまま
-            console.log('Rank out or beginner mode detected, name entry section hidden');
-        }
+        // ゲームオーバー画面を表示
+        this.uiManager.showGameOverScreen();
     }
 
     // 寄り道関連のメソッド
