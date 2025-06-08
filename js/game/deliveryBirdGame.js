@@ -14,6 +14,7 @@ class DeliveryBirdGame {
         this.destinationMarkers = [];
         this.gameLoop = null;
         this.timerInterval = null;
+        this.lastUpdateTime = 0; // 最後の更新時刻
         this.keys = {};
         this.meimeiElement = null;
         this.nameEntryState = null;
@@ -317,6 +318,10 @@ class DeliveryBirdGame {
         this.gameState.visitedCities.clear();
         this.gameState.canSelectDestination = true;
         
+        // 時間管理の初期化
+        this.lastUpdateTime = Date.now();
+        this.gameLogic.lastUpdateTime = Date.now();
+        
         this.gameLogic.generateDestinations();
         this.gameLogic.spawnEnemies();
         this.gameLogic.spawnPowerUps();
@@ -335,7 +340,8 @@ class DeliveryBirdGame {
         }, 300);
         
         this.gameLoop = setInterval(() => this.update(), 1000 / 60); // 60 FPS
-        this.timerInterval = setInterval(() => this.updateTimer(), 1000);
+        this.lastUpdateTime = Date.now();
+        this.timerInterval = setInterval(() => this.updateTimer(), 100); // より頻繁に時間をチェック
     }
 
     restartGame() {
@@ -383,6 +389,10 @@ class DeliveryBirdGame {
         this.gameState.isPlaying = true;
         this.gameState.canSelectDestination = true;
         
+        // 時間管理の初期化
+        this.lastUpdateTime = Date.now();
+        this.gameLogic.lastUpdateTime = Date.now();
+        
         // 敵とパワーアップを生成
         this.gameLogic.spawnEnemies();
         this.gameLogic.spawnPowerUps();
@@ -397,7 +407,8 @@ class DeliveryBirdGame {
         
         // ゲームループを開始
         this.gameLoop = setInterval(() => this.update(), 1000 / 60); // 60 FPS
-        this.timerInterval = setInterval(() => this.updateTimer(), 1000);
+        this.lastUpdateTime = Date.now();
+        this.timerInterval = setInterval(() => this.updateTimer(), 100); // より頻繁に時間をチェック
         
         console.log('Restarting game - completed'); // デバッグ用
     }
@@ -502,11 +513,21 @@ class DeliveryBirdGame {
     updateTimer() {
         if (!this.gameState.isPlaying) return;
 
-        this.gameState.timeLeft--;
-        if (this.gameState.timeLeft <= 0) {
-            this.endGame();
+        const currentTime = Date.now();
+        const deltaTime = currentTime - this.lastUpdateTime;
+        
+        // 100ms以上経過した場合のみ時間を減らす（より正確な時間管理）
+        if (deltaTime >= 1000) {
+            const secondsToDeduct = Math.floor(deltaTime / 1000);
+            this.gameState.timeLeft -= secondsToDeduct;
+            this.lastUpdateTime = currentTime;
+            
+            if (this.gameState.timeLeft <= 0) {
+                this.gameState.timeLeft = 0;
+                this.endGame();
+            }
+            this.uiManager.updateUI();
         }
-        this.uiManager.updateUI();
     }
 
     endGame() {

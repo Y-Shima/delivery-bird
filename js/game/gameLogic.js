@@ -3,6 +3,7 @@ class GameLogic {
     constructor(gameState) {
         this.gameState = gameState;
         this.uiManager = null;
+        this.lastUpdateTime = Date.now();
     }
     
     // UIManagerの参照を設定
@@ -25,7 +26,6 @@ class GameLogic {
         if (speedLevel === 0) return 0;
         
         // スピードレベル5で地球の反対側（20037.5km）まで60秒
-        // 緯度による速度変更は行わない
         const maxSpeedKmPerSec = GAME_CONFIG.MAX_SPEED_DISTANCE / GAME_CONFIG.MAX_SPEED_TIME;
         return (speedLevel / 5) * maxSpeedKmPerSec;
     }
@@ -79,24 +79,27 @@ class GameLogic {
 
     updatePlayer() {
         const player = this.gameState.player;
+        const currentTime = Date.now();
+        const deltaTime = (currentTime - this.lastUpdateTime) / 1000; // 秒単位
+        this.lastUpdateTime = currentTime;
         
         // スタン状態チェック
-        if (player.isStunned && Date.now() > player.stunEndTime) {
+        if (player.isStunned && currentTime > player.stunEndTime) {
             player.isStunned = false;
             // スタン終了時に無敵状態を開始
             player.isInvincible = true;
-            player.invincibleEndTime = Date.now() + GAME_CONFIG.INVINCIBLE_DURATION * 1000;
+            player.invincibleEndTime = currentTime + GAME_CONFIG.INVINCIBLE_DURATION * 1000;
             console.log('Player became invincible for', GAME_CONFIG.INVINCIBLE_DURATION, 'seconds');
         }
 
         // 無敵状態チェック
-        if (player.isInvincible && Date.now() > player.invincibleEndTime) {
+        if (player.isInvincible && currentTime > player.invincibleEndTime) {
             player.isInvincible = false;
             console.log('Player invincibility ended');
         }
 
         // パワーアップ状態チェック
-        if (player.isPoweredUp && Date.now() > player.powerUpEndTime) {
+        if (player.isPoweredUp && currentTime > player.powerUpEndTime) {
             player.isPoweredUp = false;
         }
 
@@ -107,14 +110,16 @@ class GameLogic {
 
         player.speed = currentSpeedKmPerSec;
 
-        // 移動
-        if (player.speed > 0) {
+        // 移動（フレームレート独立）
+        if (player.speed > 0 && deltaTime > 0) {
             const angleRad = (player.angle - 90) * Math.PI / 180;
-            const deltaKm = player.speed / 60; // 1フレーム分の移動距離（km）
+            const deltaKm = player.speed * deltaTime; // 実際の経過時間に基づく移動距離
             
-            // 緯度経度の変化を計算（緯度による速度変更なし）
+            // 緯度経度の変化を計算
             const deltaLat = (deltaKm / 111.32) * Math.cos(angleRad); // 1度 ≈ 111.32km
-            const deltaLng = (deltaKm / 111.32) * Math.sin(angleRad); // 緯度による補正なし
+            // 緯度による経度の補正を適用
+            const latRad = player.lat * Math.PI / 180;
+            const deltaLng = (deltaKm / (111.32 * Math.cos(latRad))) * Math.sin(angleRad);
             
             player.lat += deltaLat;
             player.lng += deltaLng;
@@ -127,6 +132,9 @@ class GameLogic {
     }
 
     updateEnemies() {
+        const currentTime = Date.now();
+        const deltaTime = (currentTime - this.lastUpdateTime) / 1000; // 秒単位
+        
         this.gameState.enemies.forEach(enemy => {
             const player = this.gameState.player;
             
@@ -151,19 +159,23 @@ class GameLogic {
                     break;
             }
 
-            // 敵の移動
-            const angleRad = (enemy.angle - 90) * Math.PI / 180;
-            const deltaKm = enemy.speed / 60;
-            const deltaLat = (deltaKm / 111.32) * Math.cos(angleRad);
-            const deltaLng = (deltaKm / 111.32) * Math.sin(angleRad); // 緯度による補正なし
-            
-            enemy.lat += deltaLat;
-            enemy.lng += deltaLng;
-            
-            // 境界チェック
-            enemy.lat = Math.max(-85, Math.min(85, enemy.lat));
-            if (enemy.lng > 180) enemy.lng -= 360;
-            if (enemy.lng < -180) enemy.lng += 360;
+            // 敵の移動（フレームレート独立）
+            if (deltaTime > 0) {
+                const angleRad = (enemy.angle - 90) * Math.PI / 180;
+                const deltaKm = enemy.speed * deltaTime; // 実際の経過時間に基づく移動距離
+                const deltaLat = (deltaKm / 111.32) * Math.cos(angleRad);
+                // 緯度による経度の補正を適用
+                const latRad = enemy.lat * Math.PI / 180;
+                const deltaLng = (deltaKm / (111.32 * Math.cos(latRad))) * Math.sin(angleRad);
+                
+                enemy.lat += deltaLat;
+                enemy.lng += deltaLng;
+                
+                // 境界チェック
+                enemy.lat = Math.max(-85, Math.min(85, enemy.lat));
+                if (enemy.lng > 180) enemy.lng -= 360;
+                if (enemy.lng < -180) enemy.lng += 360;
+            }
         });
     }
 
