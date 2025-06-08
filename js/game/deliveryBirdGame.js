@@ -26,6 +26,60 @@ class DeliveryBirdGame {
         this.init();
     }
 
+    createManualAttribution() {
+        const mapContainer = document.getElementById('map-container');
+        
+        if (mapContainer) {
+            // 既存の手動クレジットがあれば削除
+            const existingCredit = document.getElementById('manual-attribution');
+            if (existingCredit) {
+                existingCredit.remove();
+            }
+            
+            // 手動でクレジット表記を作成
+            const attribution = document.createElement('div');
+            attribution.id = 'manual-attribution';
+            attribution.innerHTML = '© <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors';
+            
+            // 強制的にスタイルを設定
+            attribution.style.cssText = `
+                position: absolute !important;
+                bottom: 10px !important;
+                left: 10px !important;
+                background: rgba(255, 255, 255, 0.9) !important;
+                padding: 3px 6px !important;
+                font-size: 11px !important;
+                border-radius: 4px !important;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4) !important;
+                z-index: 1000 !important;
+                max-width: calc(100% - 20px) !important;
+                word-wrap: break-word !important;
+                font-family: Arial, sans-serif !important;
+                display: block !important;
+                visibility: visible !important;
+                opacity: 1 !important;
+                color: black !important;
+            `;
+            
+            // リンクのスタイル
+            const link = attribution.querySelector('a');
+            if (link) {
+                link.style.cssText = `
+                    color: #0078A8 !important;
+                    text-decoration: none !important;
+                `;
+                link.addEventListener('mouseover', () => {
+                    link.style.textDecoration = 'underline';
+                });
+                link.addEventListener('mouseout', () => {
+                    link.style.textDecoration = 'none';
+                });
+            }
+            
+            mapContainer.appendChild(attribution);
+        }
+    }
+
     // 安全な要素取得のヘルパー関数
     safeGetElement(id) {
         const element = document.getElementById(id);
@@ -66,7 +120,7 @@ class DeliveryBirdGame {
             center: [this.gameState.player.lat, this.gameState.player.lng],
             zoom: GAME_CONFIG.MAP_ZOOM,
             zoomControl: false,
-            attributionControl: false,
+            attributionControl: true, // クレジット表記を有効化
             dragging: false,
             touchZoom: false,
             doubleClickZoom: false,
@@ -76,14 +130,57 @@ class DeliveryBirdGame {
             tap: false
         });
 
+        // クレジット表記を左下に配置
+        this.map.attributionControl.setPosition('bottomleft');
+
         // より詳細な地図タイル
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 18,
-            attribution: ''
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(this.map);
+
+        // クレジット表記を確実に表示するための処理
+        setTimeout(() => {
+            const attribution = document.querySelector('.leaflet-control-attribution');
+            if (attribution) {
+                // 強制的にスタイルを設定
+                attribution.style.cssText = `
+                    position: absolute !important;
+                    left: 10px !important;
+                    bottom: 10px !important;
+                    right: auto !important;
+                    z-index: 1000 !important;
+                    display: block !important;
+                    visibility: visible !important;
+                    opacity: 1 !important;
+                    background: rgba(255, 255, 255, 0.9) !important;
+                    padding: 3px 6px !important;
+                    font-size: 11px !important;
+                    border-radius: 4px !important;
+                    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4) !important;
+                    max-width: calc(75vw - 20px) !important;
+                    word-wrap: break-word !important;
+                    font-family: Arial, sans-serif !important;
+                    color: black !important;
+                `;
+            } else {
+                // 手動でクレジット表記を作成
+                this.createManualAttribution();
+            }
+        }, 500);
 
         // 地図の中心を常にプレイヤー位置に固定
         this.updateMapCenter();
+        
+        // 地図の初期化完了後にクレジット表記を確認
+        this.map.whenReady(() => {
+            setTimeout(() => {
+                const attribution = document.querySelector('.leaflet-control-attribution');
+                if (!attribution || attribution.offsetWidth === 0 || attribution.offsetHeight === 0) {
+                    this.createManualAttribution();
+                }
+            }, 100);
+        });
     }
 
     updateMapCenter() {
@@ -140,8 +237,6 @@ class DeliveryBirdGame {
     }
 
     handleKeyPress(e) {
-        console.log('Key pressed:', e.code, 'isGameOver:', this.gameState.isGameOver); // デバッグ用
-        
         // タイトル画面が表示されている場合は処理しない
         if (document.getElementById('title-screen').style.display !== 'none') {
             return;
@@ -155,25 +250,19 @@ class DeliveryBirdGame {
         // ゲームオーバー画面が表示されている場合（最優先で処理）
         if (this.gameState.isGameOver && !document.getElementById('game-over-screen').classList.contains('hidden')) {
             e.preventDefault();
-            console.log('Game over screen key pressed:', e.code, 'current selection:', this.gameOverSelection); // デバッグ用
             switch (e.code) {
                 case 'ArrowLeft':
                     this.gameOverSelection = 0; // もう一度プレイ
                     this.updateGameOverSelection();
-                    console.log('Selected: Play Again');
                     break;
                 case 'ArrowRight':
                     this.gameOverSelection = 1; // タイトルに戻る
                     this.updateGameOverSelection();
-                    console.log('Selected: Return to Title');
                     break;
                 case 'Space':
-                    console.log('Space pressed, selection:', this.gameOverSelection);
                     if (this.gameOverSelection === 0) {
-                        console.log('Restarting game...');
                         this.restartGame();
                     } else {
-                        console.log('Returning to title...');
                         this.returnToTitle();
                     }
                     break;
@@ -369,6 +458,14 @@ class DeliveryBirdGame {
         // UIを更新
         this.uiManager.updateUI();
         
+        // クレジット表記を確認・作成
+        setTimeout(() => {
+            const attribution = document.querySelector('.leaflet-control-attribution');
+            if (!attribution || attribution.offsetWidth === 0 || attribution.offsetHeight === 0) {
+                this.createManualAttribution();
+            }
+        }, 1000);
+        
         // 最初の配達先選択画面を少し遅延して表示（キーイベントの重複を防ぐ）
         setTimeout(() => {
             this.openDestinationModal();
@@ -382,8 +479,6 @@ class DeliveryBirdGame {
     }
 
     restartGame() {
-        console.log('Restarting game - step 1: cleanup'); // デバッグ用
-        
         // 既存のゲームループを停止
         if (this.gameLoop) {
             clearInterval(this.gameLoop);
@@ -394,20 +489,14 @@ class DeliveryBirdGame {
             this.timerInterval = null;
         }
         
-        console.log('Restarting game - step 1.5: resetting state'); // デバッグ用
-        
         // ゲーム状態をリセット
         this.gameState.reset();
         this.gameState.isGameOver = false; // ゲームオーバー状態を明示的にリセット
         this.gameOverSelection = 0; // 選択状態もリセット
         
-        console.log('Restarting game - step 1.7: hiding modals'); // デバッグ用
-        
         // ゲームオーバー画面を隠す
         this.safeAddClass('game-over-screen', 'hidden');
         this.safeAddClass('name-entry-section', 'hidden');
-        
-        console.log('Restarting game - step 1.8: clearing markers'); // デバッグ用
         
         // マーカーをクリア
         this.clearDestinationMarkers();
@@ -415,17 +504,11 @@ class DeliveryBirdGame {
         // 名前入力状態をクリア
         this.nameEntryState = null;
         
-        console.log('Restarting game - step 2: generating destinations'); // デバッグ用
-        
         // 新しい配達先を生成
         this.gameLogic.generateDestinations();
         
-        console.log('Restarting game - step 3: updating UI'); // デバッグ用
-        
         // UIを更新
         this.uiManager.updateUI();
-        
-        console.log('Restarting game - step 4: starting game directly'); // デバッグ用
         
         // スタート画面を確実に隠す
         const startScreen = this.safeGetElement('start-screen');
@@ -466,36 +549,28 @@ class DeliveryBirdGame {
         // 配達先選択画面を表示
         try {
             this.openDestinationModal();
-            console.log('Destination modal opened successfully'); // デバッグ用
         } catch (error) {
-            console.error('Error opening destination modal:', error); // デバッグ用
+            console.error('Error opening destination modal:', error);
         }
         
         // ゲームループを開始
         this.gameLoop = setInterval(() => this.update(), 1000 / 60); // 60 FPS
         this.lastUpdateTime = Date.now();
         this.timerInterval = setInterval(() => this.updateTimer(), 100); // より頻繁に時間をチェック
-        
-        console.log('Restarting game - completed'); // デバッグ用
+    }
     }
 
     returnToTitle() {
-        console.log('Returning to title - step 1: cleanup'); // デバッグ用
-        
         // ゲーム状態をリセット
         this.gameState.reset();
         this.gameState.isGameOver = false; // ゲームオーバー状態を明示的にリセット
         this.gameOverSelection = 0; // 選択状態もリセット
-        
-        console.log('Returning to title - step 2: hiding modals'); // デバッグ用
         
         // 全てのモーダルを閉じる
         this.safeAddClass('game-over-screen', 'hidden');
         this.safeAddClass('name-entry-section', 'hidden');
         this.safeAddClass('destination-modal', 'hidden');
         this.safeAddClass('detour-modal', 'hidden');
-        
-        console.log('Returning to title - step 3: stopping loops'); // デバッグ用
         
         // ゲームループを停止
         if (this.gameLoop) {
@@ -507,21 +582,15 @@ class DeliveryBirdGame {
             this.timerInterval = null;
         }
         
-        console.log('Returning to title - step 4: clearing markers'); // デバッグ用
-        
         // マーカーをクリア
         this.clearDestinationMarkers();
         
         // 名前入力状態をクリア
         this.nameEntryState = null;
         
-        console.log('Returning to title - step 5: updating UI'); // デバッグ用
-        
         // UIを更新
         this.gameLogic.generateDestinations();
         this.uiManager.updateUI();
-        
-        console.log('Returning to title - step 6: showing title screen'); // デバッグ用
         
         // ゲーム画面を非表示にしてタイトル画面を表示
         const gameContainer = this.safeGetElement('game-container');
@@ -533,17 +602,14 @@ class DeliveryBirdGame {
         const titleScreenElement = this.safeGetElement('title-screen');
         if (titleScreenElement) {
             titleScreenElement.style.display = 'flex';
-            console.log('Title screen displayed'); // デバッグ用
         } else {
             // フォールバック：旧スタート画面を表示
             const startScreen = this.safeGetElement('start-screen');
             if (startScreen) {
                 startScreen.style.display = 'flex';
-                console.log('Start screen displayed as fallback'); // デバッグ用
             }
         }
-        
-        console.log('Returning to title - completed'); // デバッグ用
+    }
     }
 
     update() {

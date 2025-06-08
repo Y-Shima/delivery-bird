@@ -1,5 +1,74 @@
 /* ゲーム画面スタイル */
 
+/* Leaflet地図のクレジット表記スタイル */
+.leaflet-control-attribution {
+    background: rgba(255, 255, 255, 0.9) !important;
+    font-size: 11px !important;
+    padding: 3px 6px !important;
+    border-radius: 4px !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4) !important;
+    z-index: 1000 !important;
+    position: absolute !important;
+    left: 10px !important;
+    bottom: 10px !important;
+    right: auto !important;
+    max-width: calc(75vw - 20px) !important; /* 地図幅内に収める */
+    word-wrap: break-word !important;
+}
+
+.leaflet-control-attribution a {
+    color: #0078A8 !important;
+    text-decoration: none !important;
+}
+
+.leaflet-control-attribution a:hover {
+    text-decoration: underline !important;
+}
+
+/* Leafletコントロール全体のz-index調整 */
+.leaflet-bottom.leaflet-left {
+    z-index: 1000 !important;
+    left: 10px !important;
+    bottom: 10px !important;
+}
+
+.leaflet-bottom.leaflet-right {
+    display: none !important; /* 右下のコントロールを非表示 */
+}
+
+.leaflet-control {
+    z-index: 1000 !important;
+}
+
+/* 手動クレジット表記のスタイル */
+#manual-attribution {
+    position: absolute !important;
+    bottom: 10px !important;
+    left: 10px !important;
+    background: rgba(255, 255, 255, 0.9) !important;
+    padding: 3px 6px !important;
+    font-size: 11px !important;
+    border-radius: 4px !important;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4) !important;
+    z-index: 1000 !important;
+    max-width: calc(100% - 20px) !important;
+    word-wrap: break-word !important;
+    font-family: Arial, sans-serif !important;
+}
+
+/* 地図コンテナ */
+#map-container {
+    position: relative;
+    width: 75%;
+    height: 100vh;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
 /* メイメイを中央に固定 */
 #meimei-center {
     position: absolute;
