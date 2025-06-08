@@ -275,6 +275,12 @@ class UIManager {
         // ゲームオーバー画面を表示
         gameOverScreen.classList.remove('hidden');
         
+        // 初期選択状態を設定（もう一度プレイを選択）
+        if (window.game) {
+            window.game.gameOverSelection = 0;
+            window.game.updateGameOverSelection();
+        }
+        
         // フォーカスを確実にゲームオーバー画面に設定
         setTimeout(() => {
             gameOverScreen.focus();

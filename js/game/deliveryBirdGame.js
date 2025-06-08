@@ -21,8 +21,34 @@ class DeliveryBirdGame {
         this.detourSelection = 0; // 寄り道モーダルの選択状態（0-3）
         this.frameCount = 0; // フレームカウンター
         this.ignoreKeyInput = false; // キー入力を一時的に無視するフラグ
+        this.gameOverSelection = 0; // ゲームオーバー画面の選択状態（0: もう一度プレイ, 1: タイトルに戻る）
         
         this.init();
+    }
+
+    // 安全な要素取得のヘルパー関数
+    safeGetElement(id) {
+        const element = document.getElementById(id);
+        if (!element) {
+            console.warn(`Element with id '${id}' not found`);
+        }
+        return element;
+    }
+
+    // 安全にクラスを追加するヘルパー関数
+    safeAddClass(id, className) {
+        const element = this.safeGetElement(id);
+        if (element) {
+            element.classList.add(className);
+        }
+    }
+
+    // 安全にクラスを削除するヘルパー関数
+    safeRemoveClass(id, className) {
+        const element = this.safeGetElement(id);
+        if (element) {
+            element.classList.remove(className);
+        }
     }
 
     init() {
@@ -114,6 +140,8 @@ class DeliveryBirdGame {
     }
 
     handleKeyPress(e) {
+        console.log('Key pressed:', e.code, 'isGameOver:', this.gameState.isGameOver); // デバッグ用
+        
         // タイトル画面が表示されている場合は処理しない
         if (document.getElementById('title-screen').style.display !== 'none') {
             return;
@@ -121,6 +149,35 @@ class DeliveryBirdGame {
         
         // キー入力を一時的に無視する場合は処理しない
         if (this.ignoreKeyInput) {
+            return;
+        }
+        
+        // ゲームオーバー画面が表示されている場合（最優先で処理）
+        if (this.gameState.isGameOver && !document.getElementById('game-over-screen').classList.contains('hidden')) {
+            e.preventDefault();
+            console.log('Game over screen key pressed:', e.code, 'current selection:', this.gameOverSelection); // デバッグ用
+            switch (e.code) {
+                case 'ArrowLeft':
+                    this.gameOverSelection = 0; // もう一度プレイ
+                    this.updateGameOverSelection();
+                    console.log('Selected: Play Again');
+                    break;
+                case 'ArrowRight':
+                    this.gameOverSelection = 1; // タイトルに戻る
+                    this.updateGameOverSelection();
+                    console.log('Selected: Return to Title');
+                    break;
+                case 'Space':
+                    console.log('Space pressed, selection:', this.gameOverSelection);
+                    if (this.gameOverSelection === 0) {
+                        console.log('Restarting game...');
+                        this.restartGame();
+                    } else {
+                        console.log('Returning to title...');
+                        this.returnToTitle();
+                    }
+                    break;
+            }
             return;
         }
         
@@ -138,26 +195,6 @@ class DeliveryBirdGame {
             e.preventDefault();
             if (e.code === 'Space' || e.code === 'Enter') {
                 this.uiManager.hideCityArrivalModal();
-            }
-            return;
-        }
-
-        // ゲームオーバー画面が表示されている場合
-        if (this.gameState.isGameOver && !document.getElementById('game-over-screen').classList.contains('hidden')) {
-            e.preventDefault();
-            console.log('Game over screen key pressed:', e.code); // デバッグ用
-            switch (e.code) {
-                case 'ArrowLeft':
-                case 'ArrowRight':
-                case 'Space':
-                case 'Enter':
-                case 'KeyR':
-                    this.restartGame();
-                    break;
-                case 'KeyT':
-                case 'Escape':
-                    this.returnToTitle();
-                    break;
             }
             return;
         }
@@ -357,12 +394,20 @@ class DeliveryBirdGame {
             this.timerInterval = null;
         }
         
+        console.log('Restarting game - step 1.5: resetting state'); // デバッグ用
+        
         // ゲーム状態をリセット
         this.gameState.reset();
+        this.gameState.isGameOver = false; // ゲームオーバー状態を明示的にリセット
+        this.gameOverSelection = 0; // 選択状態もリセット
+        
+        console.log('Restarting game - step 1.7: hiding modals'); // デバッグ用
         
         // ゲームオーバー画面を隠す
-        document.getElementById('game-over-screen').classList.add('hidden');
-        document.getElementById('name-entry-section').classList.add('hidden');
+        this.safeAddClass('game-over-screen', 'hidden');
+        this.safeAddClass('name-entry-section', 'hidden');
+        
+        console.log('Restarting game - step 1.8: clearing markers'); // デバッグ用
         
         // マーカーをクリア
         this.clearDestinationMarkers();
@@ -383,7 +428,23 @@ class DeliveryBirdGame {
         console.log('Restarting game - step 4: starting game directly'); // デバッグ用
         
         // スタート画面を確実に隠す
-        document.getElementById('start-screen').style.display = 'none';
+        const startScreen = this.safeGetElement('start-screen');
+        if (startScreen) {
+            startScreen.style.display = 'none';
+        }
+        
+        // ゲーム画面を表示
+        const gameContainer = this.safeGetElement('game-container');
+        if (gameContainer) {
+            gameContainer.style.display = 'flex';
+        }
+        
+        // UIパネルを確実に表示
+        const uiPanel = this.safeGetElement('ui-panel');
+        if (uiPanel) {
+            uiPanel.style.display = 'flex';
+            uiPanel.style.visibility = 'visible';
+        }
         
         // ゲーム状態を開始状態に設定
         this.gameState.isPlaying = true;
@@ -403,7 +464,12 @@ class DeliveryBirdGame {
         this.addDestinationMarkers();
         
         // 配達先選択画面を表示
-        this.openDestinationModal();
+        try {
+            this.openDestinationModal();
+            console.log('Destination modal opened successfully'); // デバッグ用
+        } catch (error) {
+            console.error('Error opening destination modal:', error); // デバッグ用
+        }
         
         // ゲームループを開始
         this.gameLoop = setInterval(() => this.update(), 1000 / 60); // 60 FPS
@@ -414,15 +480,22 @@ class DeliveryBirdGame {
     }
 
     returnToTitle() {
-        console.log('Returning to title'); // デバッグ用
+        console.log('Returning to title - step 1: cleanup'); // デバッグ用
+        
         // ゲーム状態をリセット
         this.gameState.reset();
+        this.gameState.isGameOver = false; // ゲームオーバー状態を明示的にリセット
+        this.gameOverSelection = 0; // 選択状態もリセット
+        
+        console.log('Returning to title - step 2: hiding modals'); // デバッグ用
         
         // 全てのモーダルを閉じる
-        document.getElementById('game-over-screen').classList.add('hidden');
-        document.getElementById('name-entry-section').classList.add('hidden');
-        document.getElementById('destination-modal').classList.add('hidden');
-        document.getElementById('detour-modal').classList.add('hidden');
+        this.safeAddClass('game-over-screen', 'hidden');
+        this.safeAddClass('name-entry-section', 'hidden');
+        this.safeAddClass('destination-modal', 'hidden');
+        this.safeAddClass('detour-modal', 'hidden');
+        
+        console.log('Returning to title - step 3: stopping loops'); // デバッグ用
         
         // ゲームループを停止
         if (this.gameLoop) {
@@ -434,24 +507,43 @@ class DeliveryBirdGame {
             this.timerInterval = null;
         }
         
+        console.log('Returning to title - step 4: clearing markers'); // デバッグ用
+        
         // マーカーをクリア
         this.clearDestinationMarkers();
         
         // 名前入力状態をクリア
         this.nameEntryState = null;
         
+        console.log('Returning to title - step 5: updating UI'); // デバッグ用
+        
         // UIを更新
         this.gameLogic.generateDestinations();
         this.uiManager.updateUI();
         
+        console.log('Returning to title - step 6: showing title screen'); // デバッグ用
+        
         // ゲーム画面を非表示にしてタイトル画面を表示
-        document.getElementById('game-container').style.display = 'none';
-        if (titleScreen) {
-            titleScreen.show();
+        const gameContainer = this.safeGetElement('game-container');
+        if (gameContainer) {
+            gameContainer.style.display = 'none';
+        }
+        
+        // タイトル画面を表示
+        const titleScreenElement = this.safeGetElement('title-screen');
+        if (titleScreenElement) {
+            titleScreenElement.style.display = 'flex';
+            console.log('Title screen displayed'); // デバッグ用
         } else {
             // フォールバック：旧スタート画面を表示
-            document.getElementById('start-screen').style.display = 'flex';
+            const startScreen = this.safeGetElement('start-screen');
+            if (startScreen) {
+                startScreen.style.display = 'flex';
+                console.log('Start screen displayed as fallback'); // デバッグ用
+            }
         }
+        
+        console.log('Returning to title - completed'); // デバッグ用
     }
 
     update() {
@@ -527,6 +619,24 @@ class DeliveryBirdGame {
                 this.endGame();
             }
             this.uiManager.updateUI();
+        }
+    }
+
+    updateGameOverSelection() {
+        const restartBtn = document.getElementById('restart-btn');
+        const titleBtn = document.getElementById('title-btn');
+        
+        if (restartBtn && titleBtn) {
+            // 選択状態をリセット
+            restartBtn.classList.remove('selected');
+            titleBtn.classList.remove('selected');
+            
+            // 現在の選択を強調表示
+            if (this.gameOverSelection === 0) {
+                restartBtn.classList.add('selected');
+            } else {
+                titleBtn.classList.add('selected');
+            }
         }
     }
 

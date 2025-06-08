@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ゲームインスタンスを作成（まだ開始しない）
     game = new DeliveryBirdGame();
     window.deliveryBirdGame = game;
+    window.game = game; // UIManagerからアクセスできるように
     
     // ゲーム画面を非表示にしてタイトル画面を表示
     document.getElementById('game-container').style.display = 'none';

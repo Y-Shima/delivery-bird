@@ -396,9 +396,10 @@ button:hover {
     transition: all 0.3s ease;
 }
 
-#restart-btn:hover {
+#restart-btn:hover, #restart-btn.selected {
     background: linear-gradient(135deg, #228B22, #006400);
     transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 #title-btn {
@@ -412,9 +413,10 @@ button:hover {
     transition: all 0.3s ease;
 }
 
-#title-btn:hover {
+#title-btn:hover, #title-btn.selected {
     background: linear-gradient(135deg, #6495ED, #87CEEB);
     transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .game-over-controls {
