@@ -47,36 +47,82 @@ const LANGUAGE_CONFIG = {
 
 // 現在の言語設定（ブラウザの設定を優先）
 function detectBrowserLanguage() {
-    const browserLang = navigator.language || navigator.userLanguage;
+    // 複数の言語設定を確認
+    const languages = [
+        navigator.language,
+        navigator.userLanguage,
+        ...(navigator.languages || [])
+    ].filter(Boolean);
     
-    if (browserLang.startsWith('ja')) {
-        return 'ja';
-    } else if (browserLang.startsWith('en')) {
-        return 'en';
-    } else if (browserLang.startsWith('zh')) {
-        return 'zh';
-    } else {
-        return 'en'; // デフォルトは英語
+    console.log('Config: Detected browser languages:', languages);
+    
+    // 各言語を順番にチェック
+    for (const lang of languages) {
+        const langCode = lang.toLowerCase();
+        
+        if (langCode.startsWith('ja')) {
+            console.log('Config: Selected language: Japanese (ja)');
+            return 'ja';
+        } else if (langCode.startsWith('zh')) {
+            console.log('Config: Selected language: Chinese (zh)');
+            return 'zh';
+        } else if (langCode.startsWith('en')) {
+            console.log('Config: Selected language: English (en)');
+            return 'en';
+        }
     }
+    
+    // システムの地域設定も確認（Macの場合）
+    const systemLocale = Intl.DateTimeFormat().resolvedOptions().locale;
+    console.log('Config: System locale:', systemLocale);
+    
+    if (systemLocale.startsWith('ja')) {
+        console.log('Config: Selected language from system locale: Japanese (ja)');
+        return 'ja';
+    } else if (systemLocale.startsWith('zh')) {
+        console.log('Config: Selected language from system locale: Chinese (zh)');
+        return 'zh';
+    }
+    
+    // デフォルトは英語
+    console.log('Config: Selected language: English (en) - default');
+    return 'en';
 }
 
-let currentLanguage = localStorage.getItem('delivery-bird-language') || detectBrowserLanguage();
+// 初期言語を決定（保存された設定 > ブラウザ設定の順）
+function getInitialLanguage() {
+    // まず保存された言語設定を確認
+    const savedLanguage = localStorage.getItem('delivery-bird-language');
+    if (savedLanguage && LANGUAGE_CONFIG.SUPPORTED_LANGUAGES.includes(savedLanguage)) {
+        console.log('Config: Using saved language:', savedLanguage);
+        return savedLanguage;
+    }
+    
+    // 保存された設定がない場合はブラウザ設定を検出
+    return detectBrowserLanguage();
+}
+
+let currentLanguage = getInitialLanguage();
 let currentLang = null;
 
 // 言語設定を読み込む
 function loadLanguage(lang) {
+    console.log('Config: Loading language:', lang);
     currentLanguage = lang;
     localStorage.setItem('delivery-bird-language', lang);
     
     switch(lang) {
         case 'en':
             currentLang = LANG_EN;
+            console.log('Config: Loaded English language pack');
             break;
         case 'zh':
             currentLang = LANG_ZH;
+            console.log('Config: Loaded Chinese language pack');
             break;
         default:
             currentLang = LANG_JA;
+            console.log('Config: Loaded Japanese language pack (default)');
     }
 }
 
@@ -106,5 +152,19 @@ function translateCountry(countryName) {
     return currentLang.countries[countryName] || countryName;
 }
 
+// デバッグ用：ブラウザの言語情報を表示
+function debugLanguageInfo() {
+    console.log('=== Language Detection Debug Info ===');
+    console.log('navigator.language:', navigator.language);
+    console.log('navigator.userLanguage:', navigator.userLanguage);
+    console.log('navigator.languages:', navigator.languages);
+    console.log('Intl.DateTimeFormat().resolvedOptions().locale:', Intl.DateTimeFormat().resolvedOptions().locale);
+    console.log('localStorage saved language:', localStorage.getItem('delivery-bird-language'));
+    console.log('Current detected language:', currentLanguage);
+    console.log('=====================================');
+}
+
 // 初期化
+console.log('Config: Initializing with language:', currentLanguage);
+debugLanguageInfo();
 loadLanguage(currentLanguage);

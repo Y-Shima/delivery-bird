@@ -2,8 +2,21 @@
 class TitleScreen {
     constructor() {
         this.selectedMode = 'normal';
-        this.selectedLanguage = this.detectBrowserLanguage();
+        this.selectedLanguage = this.getInitialLanguage();
         this.init();
+    }
+    
+    // 初期言語を決定（保存された設定 > ブラウザ設定の順）
+    getInitialLanguage() {
+        // まず保存された言語設定を確認
+        const savedLanguage = localStorage.getItem('delivery-bird-language');
+        if (savedLanguage && ['ja', 'en', 'zh'].includes(savedLanguage)) {
+            console.log('Using saved language:', savedLanguage);
+            return savedLanguage;
+        }
+        
+        // 保存された設定がない場合はブラウザ設定を検出
+        return this.detectBrowserLanguage();
     }
     
     init() {
@@ -15,17 +28,46 @@ class TitleScreen {
     
     // ブラウザの言語設定を検出
     detectBrowserLanguage() {
-        const browserLang = navigator.language || navigator.userLanguage;
+        // 複数の言語設定を確認
+        const languages = [
+            navigator.language,
+            navigator.userLanguage,
+            ...(navigator.languages || [])
+        ].filter(Boolean);
         
-        if (browserLang.startsWith('ja')) {
-            return 'ja';
-        } else if (browserLang.startsWith('en')) {
-            return 'en';
-        } else if (browserLang.startsWith('zh')) {
-            return 'zh';
-        } else {
-            return 'en'; // デフォルトは英語
+        console.log('Detected browser languages:', languages);
+        
+        // 各言語を順番にチェック
+        for (const lang of languages) {
+            const langCode = lang.toLowerCase();
+            
+            if (langCode.startsWith('ja')) {
+                console.log('Selected language: Japanese (ja)');
+                return 'ja';
+            } else if (langCode.startsWith('zh')) {
+                console.log('Selected language: Chinese (zh)');
+                return 'zh';
+            } else if (langCode.startsWith('en')) {
+                console.log('Selected language: English (en)');
+                return 'en';
+            }
         }
+        
+        // システムの地域設定も確認（Macの場合）
+        const systemLocale = Intl.DateTimeFormat().resolvedOptions().locale;
+        console.log('System locale:', systemLocale);
+        
+        if (systemLocale.startsWith('ja')) {
+            console.log('Selected language from system locale: Japanese (ja)');
+            return 'ja';
+        } else if (systemLocale.startsWith('zh')) {
+            console.log('Selected language from system locale: Chinese (zh)');
+            return 'zh';
+        }
+        
+        // デフォルトは英語
+        console.log('Selected language: English (en) - default');
+        return 'en';
     }
     
     setupEventListeners() {
@@ -86,6 +128,11 @@ class TitleScreen {
     
     selectLanguage(lang) {
         this.selectedLanguage = lang;
+        
+        // 言語設定をローカルストレージに保存
+        localStorage.setItem('delivery-bird-language', lang);
+        console.log('Language saved to localStorage:', lang);
+        
         loadLanguage(lang);
         this.updateLanguage();
         this.updateLanguageSelection();
