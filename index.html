@@ -53,6 +53,20 @@
         </div>
     </div>
 
+    <!-- 都市到着モーダル -->
+    <div id="city-arrival-modal" class="hidden">
+        <div class="modal-content">
+            <h3 id="arrival-city-name">都市名</h3>
+            <p id="arrival-city-description">都市の説明</p>
+            <div class="arrival-score">
+                <span>獲得スコア: </span><span id="arrival-score-value">0</span>
+            </div>
+            <div class="modal-controls">
+                <p>スペース: 続ける</p>
+            </div>
+        </div>
+    </div>
+
     <!-- 配達先選択フローティングウィンドウ -->
     <div id="destination-modal" class="hidden">
         <div class="modal-content">
@@ -142,7 +156,7 @@
     
     <!-- コアファイル -->
     <script src="js/core/config.js"></script>
-    <script src="js/core/cities.js"></script>
+    <script src="js/core/worldCities.js"></script>
     <script src="js/core/gameState.js"></script>
     
     <!-- UIファイル -->

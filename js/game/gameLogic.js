@@ -2,6 +2,12 @@
 class GameLogic {
     constructor(gameState) {
         this.gameState = gameState;
+        this.uiManager = null;
+    }
+    
+    // UIManagerの参照を設定
+    setUIManager(uiManager) {
+        this.uiManager = uiManager;
     }
 
     calculateDistance(lat1, lng1, lat2, lng2) {
@@ -315,6 +321,11 @@ class GameLogic {
         
         // スコア加算
         this.gameState.score += destination.reward;
+        
+        // 都市到着モーダルを表示
+        if (this.uiManager) {
+            this.uiManager.showCityArrivalModal(destination, destination.reward);
+        }
         
         // スロットから削除
         this.gameState.destinationSlots[slotIndex] = null;

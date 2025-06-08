@@ -4,6 +4,10 @@ class DeliveryBirdGame {
         this.gameState = new GameState();
         this.gameLogic = new GameLogic(this.gameState);
         this.uiManager = new UIManager(this.gameState);
+        
+        // GameLogicにUIManagerの参照を設定
+        this.gameLogic.setUIManager(this.uiManager);
+        
         this.map = null;
         this.canvas = null;
         this.ctx = null;
@@ -98,6 +102,15 @@ class DeliveryBirdGame {
                 if (document.getElementById('start-screen').style.display !== 'none') {
                     this.startGame();
                 }
+            }
+            return;
+        }
+
+        // 都市到着モーダルが表示されている場合
+        if (!document.getElementById('city-arrival-modal').classList.contains('hidden')) {
+            e.preventDefault();
+            if (e.code === 'Space' || e.code === 'Enter') {
+                this.uiManager.hideCityArrivalModal();
             }
             return;
         }

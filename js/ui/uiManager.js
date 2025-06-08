@@ -31,6 +31,39 @@ class UIManager {
         });
     }
 
+    // 都市到着モーダルを表示
+    showCityArrivalModal(city, score) {
+        const modal = document.getElementById('city-arrival-modal');
+        const cityName = document.getElementById('arrival-city-name');
+        const cityDescription = document.getElementById('arrival-city-description');
+        const scoreValue = document.getElementById('arrival-score-value');
+        
+        // 都市名を表示（翻訳があれば翻訳版を使用）
+        const translatedName = t(`cities.${city.name}`) || city.name;
+        cityName.textContent = translatedName;
+        
+        // 都市説明を表示
+        const description = t(`cityDescriptions.${city.name}`) || `${city.name}の美しい都市です。`;
+        cityDescription.textContent = description;
+        
+        // 獲得スコアを表示
+        scoreValue.textContent = score;
+        
+        // モーダルを表示
+        modal.classList.remove('hidden');
+        
+        // 3秒後に自動で閉じる
+        setTimeout(() => {
+            this.hideCityArrivalModal();
+        }, 3000);
+    }
+    
+    // 都市到着モーダルを非表示
+    hideCityArrivalModal() {
+        const modal = document.getElementById('city-arrival-modal');
+        modal.classList.add('hidden');
+    }
+
     updateUI() {
         document.getElementById('current-score').textContent = this.gameState.score;
         document.getElementById('hi-score').textContent = this.gameState.ranking[0].score;
