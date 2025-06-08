@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>メイメイの配達ゲーム</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/game.css">
+    <link rel="stylesheet" href="css/modals.css">
+</head>
+<body>
+    <div id="game-container">
+        <div id="map-container">
+            <div id="map"></div>
+            <canvas id="game-canvas"></canvas>
+            <!-- メイメイ（中央固定） -->
+            <div id="meimei-center">🐦</div>
+        </div>
+        <div id="ui-panel">
+            <div id="score-section">
+                <div class="score-item">
+                    <span class="label" id="hi-score-label">HI-SCORE</span>
+                    <span id="hi-score">1000</span>
+                </div>
+                <div class="score-item">
+                    <span class="label" id="score-label">SCORE</span>
+                    <span id="current-score">0</span>
+                </div>
+                <div class="score-item meter-item">
+                    <span class="label" id="time-label">TIME</span>
+                    <div class="time-meter-container">
+                        <div class="time-meter" id="time-meter"></div>
+                        <span id="time-display">3:00</span>
+                    </div>
+                </div>
+                <div class="score-item meter-item">
+                    <span class="label" id="speed-label">SPEED</span>
+                    <div class="speed-meter" id="speed-meter">
+                        <div class="speed-dot"></div>
+                        <div class="speed-dot"></div>
+                        <div class="speed-dot"></div>
+                        <div class="speed-dot"></div>
+                        <div class="speed-dot"></div>
+                    </div>
+                    <div id="player-status" class="player-status"></div>
+                </div>
+            </div>
+            <div id="destinations-panel">
+                <h3 id="destinations-title">配達先</h3>
+                <div id="destinations-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 配達先選択フローティングウィンドウ -->
+    <div id="destination-modal" class="hidden">
+        <div class="modal-content">
+            <h3>配達先を選択してください</h3>
+            <div id="destinations"></div>
+            <div class="modal-controls">
+                <p>↑↓: 選択 | スペース: 決定</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 寄り道モーダル -->
+    <div id="detour-modal" class="hidden">
+        <div class="detour-content">
+            <h3>配達依頼</h3>
+            <p>どの配達を受けますか？</p>
+            <div id="detour-options">
+                <!-- 動的に生成される -->
+            </div>
+            <div class="detour-controls">
+                <p>↑↓: 選択 | スペース: 決定</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ゲームオーバー画面 -->
+    <div id="game-over-screen" class="hidden" tabindex="0">
+        <div class="game-over-content">
+            <h2>GAME OVER</h2>
+            <div id="final-score">スコア: <span id="final-score-value">0</span></div>
+            
+            <!-- 名前入力セクション（ランクイン時のみ表示） -->
+            <div id="name-entry-section" class="hidden">
+                <h3>ランクイン！名前を入力してください</h3>
+                <div class="name-display">
+                    <span id="char1" class="name-char active">A</span>
+                    <span id="char2" class="name-char">A</span>
+                    <span id="char3" class="name-char">A</span>
+                </div>
+                <div class="char-selector">
+                    <span>選択中: </span><span id="current-char">A</span>
+                </div>
+                <div class="name-entry-controls">
+                    <p>左右: 文字選択 | 上下: 位置移動 | スペース: 決定 | Enter: 完了</p>
+                </div>
+            </div>
+            
+            <!-- ランキング表示 -->
+            <div id="ranking-section">
+                <h3>ランキング</h3>
+                <div id="ranking-list"></div>
+            </div>
+            
+            <!-- ボタン -->
+            <div class="game-over-buttons">
+                <button id="restart-btn">もう一度プレイ</button>
+                <button id="title-btn">タイトルに戻る</button>
+            </div>
+            
+            <!-- 操作説明 -->
+            <div class="game-over-controls">
+                <p>左右・スペース: 再開 | T・Escape: タイトル</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- スタート画面 -->
+    <div id="start-screen">
+        <div class="start-content">
+            <h1 id="game-title">メイメイの配達ゲーム</h1>
+            <div class="bird-icon">🐦</div>
+            <p id="game-subtitle">3分間でどれだけ配達できるかな？</p>
+            <div class="controls-info">
+                <p><strong id="controls-title">操作方法:</strong></p>
+                <p id="controls-rotate">← → : 回転</p>
+                <p id="controls-speed">↑ ↓ : スピード調整（0-5）</p>
+                <p id="controls-select">スペース : 配達先選択</p>
+            </div>
+            <button id="start-btn">ゲーム開始</button>
+        </div>
+    </div>
+
+    <!-- 言語ファイル -->
+    <script src="locales/ja.js"></script>
+    <script src="locales/en.js"></script>
+    <script src="locales/zh.js"></script>
+    
+    <!-- コアファイル -->
+    <script src="js/core/config.js"></script>
+    <script src="js/core/cities.js"></script>
+    <script src="js/core/gameState.js"></script>
+    
+    <!-- UIファイル -->
+    <script src="js/ui/uiManager.js"></script>
+    
+    <!-- ゲームファイル -->
+    <script src="js/game/gameLogic.js"></script>
+    <script src="js/game/deliveryBirdGame.js"></script>
+    <script src="js/game/gameControls.js"></script>
+    <script src="js/game/nameEntry.js"></script>
+    
+    <!-- 外部ライブラリ -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- メインファイル -->
+    <script src="js/main.js"></script>
+</body>
+</html>

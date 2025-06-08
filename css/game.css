@@ -1,0 +1,231 @@
+/* ゲーム画面スタイル */
+
+/* メイメイを中央に固定 */
+#meimei-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 32px;
+    z-index: 10;
+    pointer-events: none;
+    transition: transform 0.1s ease;
+    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.5));
+}
+
+#meimei-center.stunned {
+    content: '😵';
+}
+
+#meimei-center.powered-up {
+    animation: powerup-glow 0.5s infinite alternate;
+}
+
+@keyframes powerup-glow {
+    from { filter: drop-shadow(0 0 10px #FFD700); }
+    to { filter: drop-shadow(0 0 20px #FF4500); }
+}
+
+#game-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+}
+
+/* UIパネル */
+#ui-panel {
+    width: 25%;
+    background: linear-gradient(180deg, #4169E1, #6495ED);
+    color: white;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+#score-section {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.score-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.score-item.meter-item {
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.label {
+    color: #FFD700;
+    margin-bottom: 8px;
+}
+
+/* 180段階の時間メーター */
+.time-meter-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.time-meter {
+    flex: 1;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.time-meter-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #32CD32, #FFD700, #FF4444);
+    transition: width 1s ease;
+    border-radius: 10px;
+}
+
+#time-display {
+    font-size: 16px;
+    font-weight: bold;
+    color: #FFD700;
+    min-width: 50px;
+    text-align: right;
+}
+
+/* 5段階スピードメーター（ドット表示） */
+.speed-meter {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+}
+
+.speed-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.speed-dot.active {
+    background: linear-gradient(135deg, #00BFFF, #1E90FF);
+    box-shadow: 0 0 15px rgba(0, 191, 255, 0.8);
+}
+
+/* 配達先パネル */
+#destinations-panel {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 15px;
+    border-radius: 10px;
+    flex-grow: 1;
+}
+
+#destinations-panel h3 {
+    color: #FFD700;
+    margin-bottom: 15px;
+    text-align: center;
+    font-size: 18px;
+}
+
+#destinations-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* 目的地スロット */
+.destination-slot {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 10px;
+    border-radius: 8px;
+    border-left: 4px solid transparent;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.destination-slot.occupied {
+    border-left-color: #00BFFF;
+    background: rgba(0, 191, 255, 0.2);
+}
+
+.destination-slot.empty {
+    border-left-color: #666666;
+    background: rgba(102, 102, 102, 0.1);
+}
+
+.slot-number {
+    background: rgba(255, 255, 255, 0.3);
+    color: white;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: bold;
+    flex-shrink: 0;
+}
+
+.destination-info {
+    flex-grow: 1;
+}
+
+.destination-name {
+    font-weight: bold;
+    font-size: 13px;
+    color: white;
+    margin-bottom: 2px;
+}
+
+.destination-reward {
+    font-size: 11px;
+    color: #90EE90;
+    font-weight: bold;
+}
+
+.empty-slot {
+    color: #AAAAAA;
+    font-size: 12px;
+    font-style: italic;
+}
+/* メイメイの無敵状態（点滅） */
+.invincible {
+    animation: blink 0.5s infinite;
+}
+
+@keyframes blink {
+    0%, 50% {
+        opacity: 1;
+    }
+    51%, 100% {
+        opacity: 0.3;
+    }
+}
+
+/* プレイヤー状態表示 */
+.player-status {
+    font-size: 12px;
+    color: #FFD700;
+    text-align: center;
+    margin-top: 5px;
+    min-height: 16px;
+    font-weight: bold;
+}
