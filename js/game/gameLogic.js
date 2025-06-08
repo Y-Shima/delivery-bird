@@ -349,8 +349,11 @@ class GameLogic {
 
     spawnEnemies() {
         this.gameState.enemies = [];
+        // ゲームモードに応じた敵の数を計算
+        const enemyCount = GAME_CONFIG.ENEMY_COUNT * currentGameMode.enemyMultiplier;
+        
         // 敵鳥を画面外から生成
-        for (let i = 0; i < GAME_CONFIG.ENEMY_COUNT; i++) {
+        for (let i = 0; i < enemyCount; i++) {
             // 画面外のランダムな位置に生成
             const angle = Math.random() * 360;
             const distance = GAME_CONFIG.ENEMY_SPAWN_DISTANCE;

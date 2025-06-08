@@ -133,19 +133,85 @@
         </div>
     </div>
 
-    <!-- スタート画面 -->
-    <div id="start-screen">
-        <div class="start-content">
+    <!-- タイトル画面 -->
+    <div id="title-screen">
+        <div class="title-background">
+            <img src="images/delivery-bird-title-screen.png" alt="Title Background" class="title-bg-image">
+        </div>
+        
+        <!-- 言語選択（右上） -->
+        <div class="title-language-selector">
+            <select id="language-select">
+                <option value="ja">🇯🇵 日本語</option>
+                <option value="en">🇺🇸 English</option>
+                <option value="zh">🇨🇳 中文</option>
+            </select>
+        </div>
+        
+        <!-- タイトル（上部中央） -->
+        <div class="title-header">
             <h1 id="game-title">メイメイの配達ゲーム</h1>
-            <div class="bird-icon">🐦</div>
-            <p id="game-subtitle">3分間でどれだけ配達できるかな？</p>
-            <div class="controls-info">
-                <p><strong id="controls-title">操作方法:</strong></p>
-                <p id="controls-rotate">← → : 回転</p>
-                <p id="controls-speed">↑ ↓ : スピード調整（0-5）</p>
-                <p id="controls-select">スペース : 配達先選択</p>
+        </div>
+        
+        <!-- メイン画面（下部2分割） -->
+        <div class="title-main">
+            <!-- 左側（空白） -->
+            <div class="title-left">
+                <!-- 空白または追加コンテンツ用 -->
             </div>
-            <button id="start-btn">ゲーム開始</button>
+            
+            <!-- 右側（メニュー） -->
+            <div class="title-right">
+                <div class="title-content">
+                    <p id="game-subtitle">3分間でどれだけ配達できるかな？</p>
+                    
+                    <!-- ゲームモード選択 -->
+                    <div class="mode-selection">
+                        <h3 id="mode-title">ゲームモード</h3>
+                        <div class="mode-options">
+                            <div class="mode-option" data-mode="beginner">
+                                <div class="mode-name" id="mode-beginner">ビギナー</div>
+                                <div class="mode-desc" id="mode-beginner-desc">スコア登録されません</div>
+                            </div>
+                            <div class="mode-option selected" data-mode="normal">
+                                <div class="mode-name" id="mode-normal">ノーマル</div>
+                                <div class="mode-desc" id="mode-normal-desc">スコア登録されます</div>
+                            </div>
+                        </div>
+                        <div class="mode-controls">
+                            <p id="mode-controls-text">← → : モード選択</p>
+                        </div>
+                    </div>
+                    
+                    <!-- 操作説明 -->
+                    <div class="controls-info">
+                        <p><strong id="controls-title">操作方法:</strong></p>
+                        <p id="controls-rotate">← → : 回転</p>
+                        <p id="controls-speed">↑ ↓ : スピード調整（0-5）</p>
+                        <p id="controls-select">スペース : 配達先選択</p>
+                    </div>
+                    
+                    <div class="start-button-container">
+                        <div class="push-space-text" id="push-space-text">PUSH SPACE</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- スタート画面（旧） -->
+    <div id="start-screen" class="hidden">
+        <div class="start-content">
+            <h1 id="game-title-old">メイメイの配達ゲーム</h1>
+            <div class="bird-icon">🐦</div>
+            <p id="game-subtitle-old">3分間でどれだけ配達できるかな？</p>
+            <div class="controls-info">
+                <p><strong id="controls-title-old">操作方法:</strong></p>
+                <p id="controls-rotate-old">← → : 回転</p>
+                <p id="controls-speed-old">↑ ↓ : スピード調整（0-5）</p>
+                <p id="controls-select-old">スペース : 配達先選択</p>
+            </div>
+            <button id="start-btn-old">ゲーム開始</button>
         </div>
     </div>
 
@@ -161,6 +227,7 @@
     
     <!-- UIファイル -->
     <script src="js/ui/uiManager.js"></script>
+    <script src="js/ui/titleScreen.js"></script>
     
     <!-- ゲームファイル -->
     <script src="js/game/gameLogic.js"></script>

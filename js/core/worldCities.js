@@ -13,8 +13,8 @@ const WORLD_CITIES = [
     // 中国（4箇所）
     { name: "北京", lat: 39.9042, lng: 116.4074, country: "中国" },
     { name: "上海", lat: 31.2304, lng: 121.4737, country: "中国" },
-    { name: "広州", lat: 23.1291, lng: 113.2644, country: "中国" },
-    { name: "深圳", lat: 22.5431, lng: 114.0579, country: "中国" },
+    { name: "西安", lat: 34.2658, lng: 108.9541, country: "中国" },
+    { name: "ハルビン", lat: 45.8038, lng: 126.5349, country: "中国" },
     
     // イギリス
     { name: "ロンドン", lat: 51.5074, lng: -0.1278, country: "イギリス" },

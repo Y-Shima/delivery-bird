@@ -20,6 +20,8 @@ body {
     display: flex;
     width: 100vw;
     height: 100vh;
+    z-index: 1;
+    position: relative;
 }
 
 #map-container {
@@ -88,5 +90,260 @@ body {
     
     #destinations-panel {
         flex: 2;
+    }
+}
+/* タイトル画面 */
+#title-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+}
+
+.title-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.title-bg-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.8;
+}
+
+/* 言語選択（右上） */
+.title-language-selector {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 10;
+}
+
+.title-language-selector select {
+    background: rgba(255, 255, 255, 0.9);
+    border: 2px solid #4ecdc4;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 1em;
+    cursor: pointer;
+    backdrop-filter: blur(5px);
+}
+
+/* タイトル（左下） */
+.title-header {
+    position: absolute;
+    bottom: 40px;
+    left: 40px;
+    z-index: 10;
+}
+
+.title-header h1 {
+    font-size: 2.5em;
+    color: #ff6b9d;
+    margin: 0;
+    text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.5);
+    background: rgba(255, 255, 255, 0.9);
+    padding: 15px 30px;
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+}
+
+/* メイン画面（全体を使用） */
+.title-main {
+    display: flex;
+    height: 100%;
+    padding: 20px;
+    gap: 20px;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 左側（空白または画像表示用） */
+.title-left {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 右側（メニュー） */
+.title-right {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 600px;
+}
+
+.title-content {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    width: 100%;
+    backdrop-filter: blur(10px);
+}
+
+.title-content p {
+    font-size: 1.2em;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+/* ゲームモード選択 */
+.mode-selection {
+    margin-bottom: 30px;
+}
+
+.mode-selection h3 {
+    font-size: 1.3em;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.mode-options {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-direction: row;
+}
+
+.mode-option {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    flex: 1;
+    max-width: 200px;
+}
+
+.mode-option:hover {
+    border-color: #ff6b9d;
+    background: #fff5f8;
+}
+
+.mode-option.selected {
+    border-color: #ff6b9d;
+    background: #fff5f8;
+    box-shadow: 0 0 10px rgba(255, 107, 157, 0.3);
+}
+
+.mode-name {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.mode-desc {
+    font-size: 0.9em;
+    color: #666;
+    line-height: 1.3;
+}
+
+.mode-controls {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.mode-controls p {
+    font-size: 0.9em;
+    color: #666;
+    margin: 0;
+}
+
+/* 操作説明 */
+.controls-info {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+.controls-info p {
+    margin: 5px 0;
+    font-size: 1em;
+    color: #333;
+}
+
+.controls-info strong {
+    color: #ff6b9d;
+}
+
+/* PUSH SPACEボタン */
+.start-button-container {
+    text-align: center;
+}
+
+.push-space-text {
+    background: linear-gradient(45deg, #ff6b9d, #4ecdc4);
+    color: white;
+    border: none;
+    padding: 15px 40px;
+    font-size: 1.5em;
+    font-weight: bold;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    width: 100%;
+    display: inline-block;
+    text-align: center;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 7px 20px rgba(0, 0, 0, 0.3);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+    .title-header h1 {
+        font-size: 2em;
+        padding: 15px 25px;
+    }
+    
+    .title-main {
+        flex-direction: column;
+        height: auto;
+    }
+    
+    .title-left {
+        display: none;
+    }
+    
+    .title-content {
+        padding: 30px 20px;
+        max-width: 90%;
+    }
+    
+    .mode-options {
+        gap: 10px;
     }
 }

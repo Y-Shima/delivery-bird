@@ -72,8 +72,9 @@ delivery-bird/
 │       ├── uiManager.js   # UI更新・表示制御
 │       └── mapManager.js  # 地図表示管理
 ├── locales/               # 多言語ファイル
-│   ├── ja.json           # 日本語
-│   └── en.json           # 英語
+│   ├── ja.js             # 日本語
+│   ├── en.js             # 英語
+│   └── zh.js             # 簡体字中国語
 ├── images/               # 画像ファイル（未使用）
 └── audio/                # 音声ファイル（未使用）
 ```
@@ -135,11 +136,13 @@ const GAME_CONFIG = {
 - **JavaScript (ES6+)**: ゲームロジック
 - **Leaflet.js**: インタラクティブ地図表示
 - **LocalStorage**: ランキングデータ保存
+- **多言語対応**: 日本語、英語、簡体字中国語
 
 ### ブラウザ対応
 - Chrome, Firefox, Safari, Edge（モダンブラウザ）
 - JavaScript有効化が必要
 - インターネット接続が必要（地図タイル取得）
+- 多言語対応（ブラウザの言語設定を自動検出）
 
 ## 📝 開発履歴
 

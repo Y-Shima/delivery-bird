@@ -171,8 +171,13 @@ class UIManager {
             if (index === this.gameState.selectedDestinationIndex) {
                 div.classList.add('selected');
             }
+            
+            // ゲームモードに応じて国名表示を制御
+            const cityName = translateCity(dest.name);
+            const countryName = currentGameMode.showCountryNames ? `, ${translateCountry(dest.country)}` : '';
+            
             div.innerHTML = `
-                <div class="destination-name">${translateCity(dest.name)}, ${translateCountry(dest.country)}</div>
+                <div class="destination-name">${cityName}${countryName}</div>
                 <div class="destination-reward">${t('destinations.reward')}: $${dest.reward}</div>
                 <div class="destination-distance">${t('destinations.distance')}: ${Math.round(dest.distance)}km</div>
             `;
@@ -206,8 +211,13 @@ class UIManager {
             if (index === this.gameState.selectedDetourIndex) {
                 div.classList.add('selected');
             }
+            
+            // ゲームモードに応じて国名表示を制御
+            const cityName = translateCity(city.name);
+            const countryName = currentGameMode.showCountryNames ? `, ${translateCountry(city.country)}` : '';
+            
             div.innerHTML = `
-                <div class="detour-city-name">${translateCity(city.name)}, ${translateCountry(city.country)}</div>
+                <div class="detour-city-name">${cityName}${countryName}</div>
                 <div class="detour-reward">${t('destinations.reward')}: $${city.reward}</div>
                 <div class="detour-distance">${t('destinations.distance')}: ${Math.round(city.distance)}km</div>
             `;
@@ -284,22 +294,4 @@ class UIManager {
         });
     }
 
-    createLanguageSelector() {
-        const selector = document.createElement('div');
-        selector.className = 'language-selector';
-        selector.innerHTML = `
-            <select id="language-select">
-                ${LANGUAGE_CONFIG.SUPPORTED_LANGUAGES.map(lang => 
-                    `<option value="${lang}" ${lang === currentLanguage ? 'selected' : ''}>${LANGUAGE_CONFIG.LANGUAGE_NAMES[lang]}</option>`
-                ).join('')}
-            </select>
-        `;
-        
-        document.body.appendChild(selector);
-        
-        document.getElementById('language-select').addEventListener('change', (e) => {
-            loadLanguage(e.target.value);
-            this.updateLanguageElements();
-        });
-    }
 }

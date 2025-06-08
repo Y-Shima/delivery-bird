@@ -15,6 +15,25 @@ const GAME_CONFIG = {
     ENEMY_COUNT: 2 // 画面内の敵の数
 };
 
+// ゲームモード設定
+const GAME_MODES = {
+    BEGINNER: {
+        id: 'beginner',
+        enemyMultiplier: 1,
+        showCountryNames: true,
+        saveScore: false
+    },
+    NORMAL: {
+        id: 'normal',
+        enemyMultiplier: 2,
+        showCountryNames: false,
+        saveScore: true
+    }
+};
+
+// 現在のゲームモード
+let currentGameMode = GAME_MODES.NORMAL;
+
 // 多言語設定
 const LANGUAGE_CONFIG = {
     DEFAULT_LANGUAGE: 'ja',
@@ -26,8 +45,22 @@ const LANGUAGE_CONFIG = {
     }
 };
 
-// 現在の言語設定
-let currentLanguage = localStorage.getItem('delivery-bird-language') || LANGUAGE_CONFIG.DEFAULT_LANGUAGE;
+// 現在の言語設定（ブラウザの設定を優先）
+function detectBrowserLanguage() {
+    const browserLang = navigator.language || navigator.userLanguage;
+    
+    if (browserLang.startsWith('ja')) {
+        return 'ja';
+    } else if (browserLang.startsWith('en')) {
+        return 'en';
+    } else if (browserLang.startsWith('zh')) {
+        return 'zh';
+    } else {
+        return 'en'; // デフォルトは英語
+    }
+}
+
+let currentLanguage = localStorage.getItem('delivery-bird-language') || detectBrowserLanguage();
 let currentLang = null;
 
 // 言語設定を読み込む

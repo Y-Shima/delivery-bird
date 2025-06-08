@@ -30,7 +30,6 @@ class DeliveryBirdGame {
         this.meimeiElement = document.getElementById('meimei-center');
         this.gameLogic.generateDestinations();
         this.uiManager.updateUI();
-        this.uiManager.createLanguageSelector();
     }
 
     initMap() {
@@ -90,10 +89,26 @@ class DeliveryBirdGame {
             this.keys[e.code] = false;
         });
 
-        // UI イベント
-        document.getElementById('start-btn').addEventListener('click', () => this.startGame());
-        document.getElementById('restart-btn').addEventListener('click', () => this.restartGame());
-        document.getElementById('title-btn').addEventListener('click', () => this.returnToTitle());
+        // UI イベント（要素が存在する場合のみ）
+        const startBtn = document.getElementById('start-btn');
+        if (startBtn) {
+            startBtn.addEventListener('click', () => this.startGame());
+        }
+        
+        const startBtnOld = document.getElementById('start-btn-old');
+        if (startBtnOld) {
+            startBtnOld.addEventListener('click', () => this.startGame());
+        }
+        
+        const restartBtn = document.getElementById('restart-btn');
+        if (restartBtn) {
+            restartBtn.addEventListener('click', () => this.restartGame());
+        }
+        
+        const titleBtn = document.getElementById('title-btn');
+        if (titleBtn) {
+            titleBtn.addEventListener('click', () => this.returnToTitle());
+        }
     }
 
     handleKeyPress(e) {
@@ -280,7 +295,22 @@ class DeliveryBirdGame {
     }
 
     startGame() {
+        // 旧スタート画面とタイトル画面の両方を非表示
         document.getElementById('start-screen').style.display = 'none';
+        if (document.getElementById('title-screen')) {
+            document.getElementById('title-screen').style.display = 'none';
+        }
+        
+        // ゲーム画面を表示
+        document.getElementById('game-container').style.display = 'flex';
+        
+        // UIパネルを確実に表示
+        const uiPanel = document.getElementById('ui-panel');
+        if (uiPanel) {
+            uiPanel.style.display = 'flex';
+            uiPanel.style.visibility = 'visible';
+        }
+        
         this.gameState.reset();
         this.gameState.isPlaying = true;
         this.gameState.visitedCities.clear();
@@ -292,6 +322,9 @@ class DeliveryBirdGame {
         this.updateMapCenter();
         this.updateMeimeiState();
         this.addDestinationMarkers();
+        
+        // UIを更新
+        this.uiManager.updateUI();
         
         // 最初の配達先選択画面をすぐに表示
         this.openDestinationModal();
@@ -395,8 +428,14 @@ class DeliveryBirdGame {
         this.gameLogic.generateDestinations();
         this.uiManager.updateUI();
         
-        // タイトル画面を表示
-        document.getElementById('start-screen').style.display = 'flex';
+        // ゲーム画面を非表示にしてタイトル画面を表示
+        document.getElementById('game-container').style.display = 'none';
+        if (titleScreen) {
+            titleScreen.show();
+        } else {
+            // フォールバック：旧スタート画面を表示
+            document.getElementById('start-screen').style.display = 'flex';
+        }
     }
 
     update() {
@@ -472,24 +511,29 @@ class DeliveryBirdGame {
         clearInterval(this.gameLoop);
         clearInterval(this.timerInterval);
 
-        // ランキングチェック（同じスコアの場合はランク外とする）
+        // ランキングチェック（ゲームモードがスコア保存対応の場合のみ）
         const finalScore = this.gameState.score;
-        const rankPosition = this.gameState.ranking.findIndex(entry => finalScore > entry.score);
+        let rankPosition = -1;
         
-        console.log('Final score:', finalScore); // デバッグ用
-        console.log('Rank position:', rankPosition); // デバッグ用
-        console.log('Current ranking:', this.gameState.ranking.map(r => r.score)); // デバッグ用
+        if (currentGameMode.saveScore) {
+            rankPosition = this.gameState.ranking.findIndex(entry => finalScore > entry.score);
+            console.log('Final score:', finalScore); // デバッグ用
+            console.log('Rank position:', rankPosition); // デバッグ用
+            console.log('Current ranking:', this.gameState.ranking.map(r => r.score)); // デバッグ用
+        } else {
+            console.log('Beginner mode - score not saved'); // デバッグ用
+        }
         
         // 統合されたゲームオーバー画面を表示
         this.uiManager.showGameOverScreen(rankPosition);
         
-        if (rankPosition !== -1) {
+        if (rankPosition !== -1 && currentGameMode.saveScore) {
             // ランクイン - 名前入力セクションを表示
             console.log('Rank in detected, showing name entry section');
             this.initNameEntry(rankPosition);
         } else {
-            // ランク外 - 名前入力セクションは非表示のまま
-            console.log('Rank out detected, name entry section hidden');
+            // ランク外またはビギナーモード - 名前入力セクションは非表示のまま
+            console.log('Rank out or beginner mode detected, name entry section hidden');
         }
     }
 
