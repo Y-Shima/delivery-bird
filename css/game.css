@@ -1,29 +1,17 @@
 /* ゲーム画面スタイル */
 
-/* メイメイを中央に固定 */
+/* メイメイを中央に固定 - 64x64スプライト用に更新 */
 #meimei-center {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    font-size: 32px;
+    width: 64px;
+    height: 64px;
     z-index: 10;
     pointer-events: none;
     transition: transform 0.1s ease;
     filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.5));
-}
-
-#meimei-center.stunned {
-    content: '😵';
-}
-
-#meimei-center.powered-up {
-    animation: powerup-glow 0.5s infinite alternate;
-}
-
-@keyframes powerup-glow {
-    from { filter: drop-shadow(0 0 10px #FFD700); }
-    to { filter: drop-shadow(0 0 20px #FF4500); }
 }
 
 #game-canvas {
@@ -207,19 +195,6 @@
     color: #AAAAAA;
     font-size: 12px;
     font-style: italic;
-}
-/* メイメイの無敵状態（点滅） */
-.invincible {
-    animation: blink 0.5s infinite;
-}
-
-@keyframes blink {
-    0%, 50% {
-        opacity: 1;
-    }
-    51%, 100% {
-        opacity: 0.3;
-    }
 }
 
 /* プレイヤー状態表示 */

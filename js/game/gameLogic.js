@@ -3,11 +3,17 @@ class GameLogic {
     constructor(gameState) {
         this.gameState = gameState;
         this.uiManager = null;
+        this.spriteManager = null;
     }
     
     // UIManagerの参照を設定
     setUIManager(uiManager) {
         this.uiManager = uiManager;
+    }
+    
+    // SpriteManagerの参照を設定
+    setSpriteManager(spriteManager) {
+        this.spriteManager = spriteManager;
     }
 
     calculateDistance(lat1, lng1, lat2, lng2) {
@@ -108,7 +114,8 @@ class GameLogic {
         player.speed = currentSpeedKmPerSec;
 
         // 移動
-        if (player.speed > 0) {
+        const isMoving = player.speed > 0;
+        if (isMoving) {
             const angleRad = (player.angle - 90) * Math.PI / 180;
             const deltaKm = player.speed / 60; // 1フレーム分の移動距離（km）
             
@@ -123,15 +130,33 @@ class GameLogic {
             player.lat = Math.max(-85, Math.min(85, player.lat));
             if (player.lng > 180) player.lng -= 360;
             if (player.lng < -180) player.lng += 360;
+            
+            // スプライトマネージャーに移動状態を通知
+            if (this.spriteManager) {
+                // 移動方向を判定
+                const direction = Math.abs(deltaLng) > Math.abs(deltaLat) 
+                    ? (deltaLng > 0 ? 'right' : 'left')
+                    : (deltaLat > 0 ? 'up' : 'down');
+                this.spriteManager.setMoving(true, direction);
+            }
+        } else {
+            // スプライトマネージャーに停止状態を通知
+            if (this.spriteManager) {
+                this.spriteManager.setMoving(false);
+            }
         }
     }
 
     updateEnemies() {
-        this.gameState.enemies.forEach(enemy => {
+        this.gameState.enemies.forEach((enemy, index) => {
             const player = this.gameState.player;
             
             // 敵の速度をプレイヤーのスピードレベル2相当に設定（常に移動）
             enemy.speed = this.calculateSpeedKmPerSecond(2); // スピードレベル2固定
+            
+            // 移動前の位置を記録
+            const oldLat = enemy.lat;
+            const oldLng = enemy.lng;
             
             switch (enemy.type) {
                 case 0: // 赤: プレイヤーに向かう
@@ -164,6 +189,13 @@ class GameLogic {
             enemy.lat = Math.max(-85, Math.min(85, enemy.lat));
             if (enemy.lng > 180) enemy.lng -= 360;
             if (enemy.lng < -180) enemy.lng += 360;
+            
+            // デバッグ: 移動量を確認
+            const movedLat = Math.abs(enemy.lat - oldLat);
+            const movedLng = Math.abs(enemy.lng - oldLng);
+            if (index === 0) { // 最初の敵のみログ出力
+                console.log(`Enemy ${index}: moved lat=${movedLat.toFixed(6)}, lng=${movedLng.toFixed(6)}, angle=${enemy.angle.toFixed(1)}, speed=${enemy.speed.toFixed(2)}`);
+            }
         });
     }
 
@@ -359,18 +391,45 @@ class GameLogic {
             const distance = GAME_CONFIG.ENEMY_SPAWN_DISTANCE;
             const angleRad = angle * Math.PI / 180;
             
-            const enemyLat = this.gameState.player.lat + (distance / 111.32) * Math.cos(angleRad);
-            const enemyLng = this.gameState.player.lng + (distance / 111.32) * Math.sin(angleRad);
+            // 距離を度数に変換（1度 ≈ 111.32km）
+            const distanceInDegrees = distance / 111.32;
             
-            this.gameState.enemies.push({
+            // 緯度・経度の変化量を計算
+            const deltaLat = distanceInDegrees * Math.cos(angleRad);
+            const deltaLng = distanceInDegrees * Math.sin(angleRad) / Math.cos(this.gameState.player.lat * Math.PI / 180);
+            
+            // 新しい座標を計算
+            let enemyLat = this.gameState.player.lat + deltaLat;
+            let enemyLng = this.gameState.player.lng + deltaLng;
+            
+            // 緯度の範囲制限（-90〜90度）
+            enemyLat = Math.max(-89, Math.min(89, enemyLat));
+            
+            // 経度の範囲制限（-180〜180度）
+            if (enemyLng > 180) {
+                enemyLng = enemyLng - 360;
+            } else if (enemyLng < -180) {
+                enemyLng = enemyLng + 360;
+            }
+            
+            console.log(`Spawning enemy ${i}: angle=${angle.toFixed(1)}°, distance=${distance}km, lat=${enemyLat.toFixed(4)}, lng=${enemyLng.toFixed(4)}`);
+            
+            const enemy = {
+                id: Date.now() + Math.random(), // ユニークID
                 lat: enemyLat,
                 lng: enemyLng,
-                angle: Math.random() * 360,
+                angle: angle, // 生成角度を初期移動方向として使用
                 speed: this.calculateSpeedKmPerSecond(2), // スピードレベル2固定
                 type: Math.floor(Math.random() * 3), // 0: 赤, 1: 黄, 2: 青
-                targetLat: this.gameState.player.lat,
-                targetLng: this.gameState.player.lng
-            });
+                active: true
+            };
+            
+            this.gameState.enemies.push(enemy);
+            
+            // スプライトを作成
+            if (this.spriteManager) {
+                this.spriteManager.createEnemySprite(enemy);
+            }
         }
     }
 
@@ -381,7 +440,13 @@ class GameLogic {
         // 画面外に出た敵を削除
         this.gameState.enemies = this.gameState.enemies.filter(enemy => {
             const distance = this.calculateDistance(player.lat, player.lng, enemy.lat, enemy.lng);
-            return distance <= GAME_CONFIG.ENEMY_SPAWN_DISTANCE * 1.2; // 少し余裕を持たせる
+            const shouldKeep = distance <= GAME_CONFIG.ENEMY_SPAWN_DISTANCE * 1.2; // 少し余裕を持たせる
+            
+            if (!shouldKeep) {
+                enemy.active = false; // スプライト削除用フラグ
+            }
+            
+            return shouldKeep;
         });
 
         // 敵の数が足りない場合は補充
@@ -394,15 +459,22 @@ class GameLogic {
             const enemyLat = player.lat + (distance / 111.32) * Math.cos(angleRad);
             const enemyLng = player.lng + (distance / 111.32) * Math.sin(angleRad);
             
-            this.gameState.enemies.push({
+            const enemy = {
+                id: Date.now() + Math.random(), // ユニークID
                 lat: enemyLat,
                 lng: enemyLng,
                 angle: Math.random() * 360,
                 speed: this.calculateSpeedKmPerSecond(2), // スピードレベル2固定
                 type: Math.floor(Math.random() * 3),
-                targetLat: player.lat,
-                targetLng: player.lng
-            });
+                active: true
+            };
+            
+            this.gameState.enemies.push(enemy);
+            
+            // スプライトを作成
+            if (this.spriteManager) {
+                this.spriteManager.createEnemySprite(enemy);
+            }
         }
     }
 

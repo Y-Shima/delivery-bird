@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- 敵キャラクター - 青い鳥 飛行フレーム1（翼上） -->
+  
+  <!-- 体（楕円形、青） -->
+  <ellipse cx="32" cy="36" rx="12" ry="16" fill="#87CEEB" stroke="#4682B4" stroke-width="1.5"/>
+  
+  <!-- 翼（左）- 上向き -->
+  <ellipse cx="18" cy="22" rx="10" ry="7" fill="#4169E1" stroke="#191970" stroke-width="1" transform="rotate(-45 18 22)"/>
+  
+  <!-- 翼（右）- 上向き -->
+  <ellipse cx="46" cy="22" rx="10" ry="7" fill="#4169E1" stroke="#191970" stroke-width="1" transform="rotate(45 46 22)"/>
+  
+  <!-- 頭（円形、青） -->
+  <circle cx="32" cy="20" r="10" fill="#87CEEB" stroke="#4682B4" stroke-width="1.5"/>
+  
+  <!-- 目（左） -->
+  <circle cx="28" cy="18" r="2.5" fill="white" stroke="#333" stroke-width="0.8"/>
+  <circle cx="28" cy="18" r="1.5" fill="#8B4513"/>
+  <circle cx="28.5" cy="17.5" r="0.6" fill="white"/>
+  
+  <!-- 目（右） -->
+  <circle cx="36" cy="18" r="2.5" fill="white" stroke="#333" stroke-width="0.8"/>
+  <circle cx="36" cy="18" r="1.5" fill="#8B4513"/>
+  <circle cx="36.5" cy="17.5" r="0.6" fill="white"/>
+  
+  <!-- くちばし（小さく、オレンジ） -->
+  <polygon points="32,21 34,23 30,23" fill="#FF6347" stroke="#FF4500" stroke-width="0.5"/>
+  
+  <!-- ほっぺ（左） -->
+  <circle cx="25" cy="21" r="2" fill="#B0E0E6" opacity="0.7"/>
+  
+  <!-- ほっぺ（右） -->
+  <circle cx="39" cy="21" r="2" fill="#B0E0E6" opacity="0.7"/>
+  
+  <!-- 尻尾（小さく） -->
+  <ellipse cx="32" cy="50" rx="3.5" ry="5" fill="#87CEEB" stroke="#4682B4" stroke-width="1"/>
+  
+  <!-- 胸の模様 -->
+  <ellipse cx="32" cy="38" rx="6" ry="8" fill="#B0E0E6" opacity="0.8"/>
+</svg>

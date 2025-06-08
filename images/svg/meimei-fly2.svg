@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <!-- メイメイ - 飛行アニメーション フレーム2（翼下） -->
+  
+  <!-- 体（楕円形） -->
+  <ellipse cx="16" cy="18" rx="8" ry="6" fill="#FFB6C1" stroke="#FF69B4" stroke-width="1"/>
+  
+  <!-- 翼（左）- 下向き -->
+  <ellipse cx="11" cy="20" rx="4" ry="3" fill="#87CEEB" stroke="#4682B4" stroke-width="0.5" transform="rotate(20 11 20)"/>
+  
+  <!-- 翼（右）- 下向き -->
+  <ellipse cx="21" cy="20" rx="4" ry="3" fill="#87CEEB" stroke="#4682B4" stroke-width="0.5" transform="rotate(-20 21 20)"/>
+  
+  <!-- 頭 -->
+  <circle cx="16" cy="10" r="6" fill="#FFB6C1" stroke="#FF69B4" stroke-width="1"/>
+  
+  <!-- くちばし -->
+  <polygon points="16,12 18,14 14,14" fill="#FFA500" stroke="#FF8C00" stroke-width="0.5"/>
+  
+  <!-- 目（左） -->
+  <circle cx="13" cy="9" r="2" fill="white" stroke="#333" stroke-width="0.5"/>
+  <circle cx="13" cy="9" r="1" fill="#333"/>
+  <circle cx="13.5" cy="8.5" r="0.3" fill="white"/>
+  
+  <!-- 目（右） -->
+  <circle cx="19" cy="9" r="2" fill="white" stroke="#333" stroke-width="0.5"/>
+  <circle cx="19" cy="9" r="1" fill="#333"/>
+  <circle cx="19.5" cy="8.5" r="0.3" fill="white"/>
+  
+  <!-- ほっぺ（左） -->
+  <circle cx="10" cy="11" r="1.5" fill="#FFB6C1" opacity="0.7"/>
+  
+  <!-- ほっぺ（右） -->
+  <circle cx="22" cy="11" r="1.5" fill="#FFB6C1" opacity="0.7"/>
+  
+  <!-- 配達バッグ -->
+  <rect x="12" y="20" width="8" height="4" rx="1" fill="#8B4513" stroke="#654321" stroke-width="0.5"/>
+  <rect x="13" y="21" width="6" height="2" fill="#D2691E"/>
+  
+  <!-- 足（左）- 飛行中は少し上に -->
+  <line x1="12" y1="22" x2="12" y2="26" stroke="#FFA500" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="10" y1="26" x2="14" y2="26" stroke="#FFA500" stroke-width="1.5" stroke-linecap="round"/>
+  
+  <!-- 足（右）- 飛行中は少し上に -->
+  <line x1="20" y1="22" x2="20" y2="26" stroke="#FFA500" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="18" y1="26" x2="22" y2="26" stroke="#FFA500" stroke-width="1.5" stroke-linecap="round"/>
+</svg>

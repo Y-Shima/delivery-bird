@@ -7,7 +7,9 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="css/base.css">
     <link rel="stylesheet" href="css/game.css">
+    <link rel="stylesheet" href="css/sprites.css">
     <link rel="stylesheet" href="css/modals.css">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
 </head>
 <body>
     <div id="game-container">
@@ -15,7 +17,7 @@
             <div id="map"></div>
             <canvas id="game-canvas"></canvas>
             <!-- メイメイ（中央固定） -->
-            <div id="meimei-center">🐦</div>
+            <div id="meimei-center"></div>
         </div>
         <div id="ui-panel">
             <div id="score-section">
@@ -231,6 +233,7 @@
     
     <!-- ゲームファイル -->
     <script src="js/game/gameLogic.js"></script>
+    <script src="js/game/spriteManager.js"></script>
     <script src="js/game/deliveryBirdGame.js"></script>
     <script src="js/game/gameControls.js"></script>
     <script src="js/game/nameEntry.js"></script>

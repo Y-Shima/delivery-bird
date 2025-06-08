@@ -11,7 +11,7 @@ const GAME_CONFIG = {
     ARRIVAL_DISTANCE: 100, // 到着判定距離（km）
     MAX_DESTINATION_SLOTS: 3, // 最大目的地スロット数
     DETOUR_DISTANCE: 300, // 寄り道判定距離（km）を大きくする
-    ENEMY_SPAWN_DISTANCE: 1500, // 敵の出現距離（km）
+    ENEMY_SPAWN_DISTANCE: 1500, // 敵の出現距離（km）- Leafletマーカーで正確に表示
     ENEMY_COUNT: 2 // 画面内の敵の数
 };
 

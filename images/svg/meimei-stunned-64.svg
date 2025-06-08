@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- メイメイ - 気絶状態 -->
+  
+  <!-- 体（楕円形、少し傾いている） -->
+  <ellipse cx="32" cy="36" rx="14" ry="18" fill="#B8E6B8" stroke="#90C695" stroke-width="1.5" transform="rotate(3 32 36)"/>
+  
+  <!-- 翼（左）- だらんと下がっている -->
+  <defs>
+    <linearGradient id="wingGradientLeftStun" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E6B3FF;stop-opacity:0.8" />
+      <stop offset="50%" style="stop-color:#D8A2D8;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#FFB6C1;stop-opacity:0.8" />
+    </linearGradient>
+  </defs>
+  <ellipse cx="20" cy="36" rx="12" ry="8" fill="url(#wingGradientLeftStun)" stroke="#C8A2C8" stroke-width="1" transform="rotate(10 20 36)"/>
+  
+  <!-- 翼（右）- だらんと下がっている -->
+  <defs>
+    <linearGradient id="wingGradientRightStun" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E6B3FF;stop-opacity:0.8" />
+      <stop offset="50%" style="stop-color:#D8A2D8;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#FFB6C1;stop-opacity:0.8" />
+    </linearGradient>
+  </defs>
+  <ellipse cx="44" cy="36" rx="12" ry="8" fill="url(#wingGradientRightStun)" stroke="#C8A2C8" stroke-width="1" transform="rotate(-10 44 36)"/>
+  
+  <!-- 頭（少し傾いている） -->
+  <circle cx="32" cy="20" r="12" fill="#B8E6B8" stroke="#90C695" stroke-width="1.5"/>
+  
+  <!-- リボン（少し傾いている） -->
+  <ellipse cx="32" cy="12" rx="8" ry="3" fill="#FF69B4" stroke="#E91E63" stroke-width="0.8" transform="rotate(5 32 12)"/>
+  <circle cx="32" cy="12" r="2.5" fill="#FF1493" stroke="#C2185B" stroke-width="0.5"/>
+  
+  <!-- 目（左）- ×印 -->
+  <circle cx="28" cy="18" r="3" fill="white" stroke="#333" stroke-width="0.8"/>
+  <line x1="25.5" y1="15.5" x2="30.5" y2="20.5" stroke="#333" stroke-width="2"/>
+  <line x1="30.5" y1="15.5" x2="25.5" y2="20.5" stroke="#333" stroke-width="2"/>
+  
+  <!-- 目（右）- ×印 -->
+  <circle cx="36" cy="18" r="3" fill="white" stroke="#333" stroke-width="0.8"/>
+  <line x1="33.5" y1="15.5" x2="38.5" y2="20.5" stroke="#333" stroke-width="2"/>
+  <line x1="38.5" y1="15.5" x2="33.5" y2="20.5" stroke="#333" stroke-width="2"/>
+  
+  <!-- くちばし -->
+  <polygon points="32,22 34,24 30,24" fill="#FF6347" stroke="#FF4500" stroke-width="0.5"/>
+  
+  <!-- ほっぺ -->
+  <circle cx="24" cy="22" r="2.5" fill="#FFB6C1" opacity="0.7"/>
+  <circle cx="40" cy="22" r="2.5" fill="#FFB6C1" opacity="0.7"/>
+  
+  <!-- 尻尾-->
+  <ellipse cx="32" cy="52" rx="4" ry="6" fill="#B8E6B8" stroke="#90C695" stroke-width="1"/>
+  
+  <!-- 配達バッグ -->
+  <rect x="26" y="40" width="12" height="8" rx="2" fill="#8B4513" stroke="#654321" stroke-width="1"/>
+  <rect x="27" y="41" width="10" height="6" fill="#D2691E"/>
+  <line x1="32" y1="40" x2="32" y2="48" stroke="#654321" stroke-width="1"/>
+  
+  <!-- 星（気絶エフェクト） -->
+  <polygon points="32,4 34,8 38,8 35,11 36,15 32,13 28,15 29,11 26,8 30,8" fill="#FFD700" stroke="#FFA500" stroke-width="1"/>
+  <polygon points="12,12 14,15 17,15 15,17 16,20 12,18 8,20 9,17 7,15 10,15" fill="#FFD700" stroke="#FFA500" stroke-width="1"/>
+  <polygon points="52,18 54,21 57,21 55,23 56,26 52,24 48,26 49,23 47,21 50,21" fill="#FFD700" stroke="#FFA500" stroke-width="1"/>
+</svg>

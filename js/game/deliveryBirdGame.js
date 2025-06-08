@@ -4,9 +4,11 @@ class DeliveryBirdGame {
         this.gameState = new GameState();
         this.gameLogic = new GameLogic(this.gameState);
         this.uiManager = new UIManager(this.gameState);
+        this.spriteManager = new SpriteManager(this.gameState);
         
-        // GameLogicにUIManagerの参照を設定
+        // GameLogicにUIManagerとSpriteManagerの参照を設定
         this.gameLogic.setUIManager(this.uiManager);
+        this.gameLogic.setSpriteManager(this.spriteManager);
         
         this.map = null;
         this.canvas = null;
@@ -115,6 +117,8 @@ class DeliveryBirdGame {
         if (!this.gameState.isPlaying) {
             if (e.code === 'Space' || e.code === 'Enter') {
                 if (document.getElementById('start-screen').style.display !== 'none') {
+                    e.preventDefault();
+                    e.stopPropagation();
                     this.startGame();
                 }
             }
@@ -160,6 +164,7 @@ class DeliveryBirdGame {
         // 寄り道モーダルが開いている場合
         if (this.gameState.isDetourModalOpen) {
             e.preventDefault(); // デフォルト動作を防ぐ
+            e.stopPropagation(); // イベント伝播を防ぐ
             switch (e.code) {
                 case 'ArrowUp':
                     this.gameState.selectedDetourIndex = Math.max(0, this.gameState.selectedDetourIndex - 1);
@@ -183,6 +188,7 @@ class DeliveryBirdGame {
         // 配達先選択モーダルが開いている場合
         if (this.gameState.isDestinationModalOpen) {
             e.preventDefault(); // デフォルト動作を防ぐ
+            e.stopPropagation(); // イベント伝播を防ぐ
             switch (e.code) {
                 case 'ArrowUp':
                     this.gameState.selectedDestinationIndex = Math.max(0, this.gameState.selectedDestinationIndex - 1);
@@ -266,32 +272,17 @@ class DeliveryBirdGame {
     }
 
     updateMeimeiRotation() {
-        if (this.meimeiElement) {
-            this.meimeiElement.style.transform = `translate(-50%, -50%) rotate(${this.gameState.player.angle}deg)`;
+        // spriteManagerに角度を渡して更新
+        if (this.spriteManager) {
+            this.spriteManager.setAngle(this.gameState.player.angle);
         }
     }
 
     updateMeimeiState() {
-        if (!this.meimeiElement) return;
-
-        const player = this.gameState.player;
-        let emoji = '🐦';
-        let className = '';
-
-        if (player.isStunned) {
-            emoji = '😵';
-            className = 'stunned';
-        } else if (player.isInvincible) {
-            emoji = '🐦';
-            className = 'invincible';
-        } else if (player.isPoweredUp) {
-            emoji = '⚡🐦';
-            className = 'powered-up';
+        // スプライトの状態更新はspriteManagerで処理
+        if (this.spriteManager) {
+            this.spriteManager.updateMeimeiSprite();
         }
-
-        this.meimeiElement.textContent = emoji;
-        this.meimeiElement.className = className;
-        this.updateMeimeiRotation();
     }
 
     startGame() {
@@ -311,6 +302,9 @@ class DeliveryBirdGame {
             uiPanel.style.visibility = 'visible';
         }
         
+        // スプライトをクリーンアップ
+        this.spriteManager.cleanup();
+        
         this.gameState.reset();
         this.gameState.isPlaying = true;
         this.gameState.visitedCities.clear();
@@ -326,8 +320,10 @@ class DeliveryBirdGame {
         // UIを更新
         this.uiManager.updateUI();
         
-        // 最初の配達先選択画面をすぐに表示
-        this.openDestinationModal();
+        // 最初の配達先選択画面を少し遅延して表示（キーイベント伝播を防ぐ）
+        setTimeout(() => {
+            this.openDestinationModal();
+        }, 100);
         
         this.gameLoop = setInterval(() => this.update(), 1000 / 60); // 60 FPS
         this.timerInterval = setInterval(() => this.updateTimer(), 1000);
@@ -345,6 +341,9 @@ class DeliveryBirdGame {
             clearInterval(this.timerInterval);
             this.timerInterval = null;
         }
+        
+        // スプライトをクリーンアップ
+        this.spriteManager.cleanup();
         
         // ゲーム状態をリセット
         this.gameState.reset();
@@ -486,6 +485,9 @@ class DeliveryBirdGame {
         this.updateMapCenter();
         this.updateMeimeiState();
         
+        // スプライトを更新
+        this.spriteManager.updateAllSprites();
+        
         // マーカーを定期的に更新（60フレームに1回）
         if (this.frameCount % 60 === 0) {
             this.updateDestinationMarkers();
@@ -510,6 +512,9 @@ class DeliveryBirdGame {
         this.gameState.isGameOver = true; // ゲームオーバー状態を設定
         clearInterval(this.gameLoop);
         clearInterval(this.timerInterval);
+        
+        // スプライトをクリーンアップ
+        this.spriteManager.cleanup();
 
         // ランキングチェック（ゲームモードがスコア保存対応の場合のみ）
         const finalScore = this.gameState.score;

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- 敵キャラクター - 赤い鳥（修正版、上から見た視点、進行方向が上） -->
+  
+  <!-- 体（楕円形、赤） -->
+  <ellipse cx="32" cy="36" rx="10" ry="14" fill="#FF6B6B" stroke="#DC143C" stroke-width="1.5"/>
+  
+  <!-- 翼（左）- 濃い赤 -->
+  <ellipse cx="20" cy="32" rx="8" ry="12" fill="#DC143C" stroke="#8B0000" stroke-width="1"/>
+  
+  <!-- 翼（右）- 濃い赤 -->
+  <ellipse cx="44" cy="32" rx="8" ry="12" fill="#DC143C" stroke="#8B0000" stroke-width="1"/>
+  
+  <!-- 頭（円形、赤） -->
+  <circle cx="32" cy="22" r="8" fill="#FF6B6B" stroke="#DC143C" stroke-width="1.5"/>
+  
+  <!-- 大きなクチバシ（頭の外側、もっと上に） -->
+  <polygon points="32,10 38,16 26,16" fill="#FF6347" stroke="#FF4500" stroke-width="1"/>
+  <polygon points="32,12 36,15 28,15" fill="#FF7F50"/>
+  
+  <!-- ほっぺ（目の上側） -->
+  <circle cx="27" cy="18" r="2" fill="#FFB6C1" opacity="0.7"/>
+  <circle cx="37" cy="18" r="2" fill="#FFB6C1" opacity="0.7"/>
+  
+  <!-- 目（左）- 上下反転 -->
+  <circle cx="28" cy="22" r="2.5" fill="white" stroke="#333" stroke-width="0.8"/>
+  <circle cx="28" cy="22" r="1.5" fill="#8B4513"/>
+  <circle cx="28.5" cy="22.5" r="0.6" fill="white"/>
+  
+  <!-- 目（右）- 上下反転 -->
+  <circle cx="36" cy="22" r="2.5" fill="white" stroke="#333" stroke-width="0.8"/>
+  <circle cx="36" cy="22" r="1.5" fill="#8B4513"/>
+  <circle cx="36.5" cy="22.5" r="0.6" fill="white"/>
+  
+  <!-- 尻尾（下向き） -->
+  <ellipse cx="32" cy="48" rx="5" ry="3" fill="#FF6B6B" stroke="#DC143C" stroke-width="1"/>
+  
+  <!-- 胸の模様 -->
+  <ellipse cx="32" cy="38" rx="5" ry="7" fill="#FFB6C1" opacity="0.8"/>
+</svg>

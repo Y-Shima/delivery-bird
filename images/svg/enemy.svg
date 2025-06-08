@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <!-- 敵キャラクター - カラス -->
+  
+  <!-- 体（楕円形） -->
+  <ellipse cx="16" cy="18" rx="7" ry="5" fill="#2F2F2F" stroke="#1A1A1A" stroke-width="1"/>
+  
+  <!-- 翼（左） -->
+  <ellipse cx="11" cy="16" rx="3.5" ry="2.5" fill="#1A1A1A" stroke="#000" stroke-width="0.5" transform="rotate(-15 11 16)"/>
+  
+  <!-- 翼（右） -->
+  <ellipse cx="21" cy="16" rx="3.5" ry="2.5" fill="#1A1A1A" stroke="#000" stroke-width="0.5" transform="rotate(15 21 16)"/>
+  
+  <!-- 頭 -->
+  <circle cx="16" cy="11" r="5" fill="#2F2F2F" stroke="#1A1A1A" stroke-width="1"/>
+  
+  <!-- くちばし（鋭い） -->
+  <polygon points="16,13 19,15 16,16" fill="#333" stroke="#000" stroke-width="0.5"/>
+  
+  <!-- 目（左）- 鋭い目つき -->
+  <ellipse cx="13" cy="10" rx="1.5" ry="1" fill="#FF4500" stroke="#8B0000" stroke-width="0.5"/>
+  <circle cx="13" cy="10" r="0.5" fill="#000"/>
+  
+  <!-- 目（右）- 鋭い目つき -->
+  <ellipse cx="19" cy="10" rx="1.5" ry="1" fill="#FF4500" stroke="#8B0000" stroke-width="0.5"/>
+  <circle cx="19" cy="10" r="0.5" fill="#000"/>
+  
+  <!-- 足（左） -->
+  <line x1="12" y1="23" x2="12" y2="27" stroke="#333" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="10" y1="27" x2="14" y2="27" stroke="#333" stroke-width="1.5" stroke-linecap="round"/>
+  
+  <!-- 足（右） -->
+  <line x1="20" y1="23" x2="20" y2="27" stroke="#333" stroke-width="1.5" stroke-linecap="round"/>
+  <line x1="18" y1="27" x2="22" y2="27" stroke="#333" stroke-width="1.5" stroke-linecap="round"/>
+  
+  <!-- 尻尾 -->
+  <polygon points="8,20 4,22 8,24" fill="#1A1A1A" stroke="#000" stroke-width="0.5"/>
+</svg>

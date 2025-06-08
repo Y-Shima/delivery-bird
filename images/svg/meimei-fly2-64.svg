@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64" height="64" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+  <!-- メイメイ - 飛行アニメーション フレーム2（翼下） -->
+  
+  <!-- 体（楕円形、淡いグリーン） -->
+  <ellipse cx="32" cy="36" rx="14" ry="18" fill="#B8E6B8" stroke="#90C695" stroke-width="1.5"/>
+  
+  <!-- 翼（左）- 下向き -->
+  <defs>
+    <linearGradient id="wingGradientLeft2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E6B3FF;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#D8A2D8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFB6C1;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <ellipse cx="21" cy="34" rx="12" ry="8" fill="url(#wingGradientLeft2)" stroke="#C8A2C8" stroke-width="1" transform="rotate(-5 21 34)"/>
+  
+  <!-- 翼（右）- 下向き -->
+  <defs>
+    <linearGradient id="wingGradientRight2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#E6B3FF;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#D8A2D8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FFB6C1;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  <ellipse cx="43" cy="34" rx="12" ry="8" fill="url(#wingGradientRight2)" stroke="#C8A2C8" stroke-width="1" transform="rotate(5 43 34)"/>
+  
+  <!-- 頭（円形、淡いグリーン） -->
+  <circle cx="32" cy="20" r="12" fill="#B8E6B8" stroke="#90C695" stroke-width="1.5"/>
+  
+  <!-- リボン（ピンク） -->
+  <ellipse cx="32" cy="12" rx="8" ry="3" fill="#FF69B4" stroke="#E91E63" stroke-width="0.8"/>
+  <circle cx="32" cy="12" r="2.5" fill="#FF1493" stroke="#C2185B" stroke-width="0.5"/>
+  
+  <!-- 目（左） -->
+  <circle cx="28" cy="18" r="3" fill="white" stroke="#333" stroke-width="0.8"/>
+  <circle cx="28" cy="18" r="2" fill="#8B4513"/>
+  <circle cx="28.8" cy="17.2" r="0.8" fill="white"/>
+  
+  <!-- 目（右） -->
+  <circle cx="36" cy="18" r="3" fill="white" stroke="#333" stroke-width="0.8"/>
+  <circle cx="36" cy="18" r="2" fill="#8B4513"/>
+  <circle cx="36.8" cy="17.2" r="0.8" fill="white"/>
+  
+  <!-- くちばし（小さく、オレンジ） -->
+  <polygon points="32,22 34,24 30,24" fill="#FF6347" stroke="#FF4500" stroke-width="0.5"/>
+  
+  <!-- ほっぺ（左） -->
+  <circle cx="24" cy="22" r="2.5" fill="#FFB6C1" opacity="0.7"/>
+  
+  <!-- ほっぺ（右） -->
+  <circle cx="40" cy="22" r="2.5" fill="#FFB6C1" opacity="0.7"/>
+  
+  <!-- 尻尾（小さく） -->
+  <ellipse cx="32" cy="52" rx="4" ry="6" fill="#B8E6B8" stroke="#90C695" stroke-width="1"/>
+  
+  <!-- 配達バッグ（背中に） -->
+  <rect x="26" y="40" width="12" height="8" rx="2" fill="#8B4513" stroke="#654321" stroke-width="1"/>
+  <rect x="27" y="41" width="10" height="6" fill="#D2691E"/>
+  <line x1="32" y1="40" x2="32" y2="48" stroke="#654321" stroke-width="1"/>
+</svg>

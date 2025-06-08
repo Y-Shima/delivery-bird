@@ -78,21 +78,7 @@ DeliveryBirdGame.prototype.updateDestinationMarkers = function() {
 DeliveryBirdGame.prototype.render = function() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-    // 敵鳥を描画
-    this.gameState.enemies.forEach(enemy => {
-        const point = this.map.latLngToContainerPoint([enemy.lat, enemy.lng]);
-        if (point.x >= -50 && point.x <= this.canvas.width + 50 && 
-            point.y >= -50 && point.y <= this.canvas.height + 50) {
-            this.ctx.save();
-            this.ctx.translate(point.x, point.y);
-            this.ctx.rotate((enemy.angle - 90) * Math.PI / 180);
-            this.ctx.font = '24px Arial';
-            this.ctx.textAlign = 'center';
-            const enemyEmojis = ['🔴🐦', '🟡🐦', '🔵🐦'];
-            this.ctx.fillText(enemyEmojis[enemy.type], 0, 8);
-            this.ctx.restore();
-        }
-    });
+    // 敵はスプライトで描画（spriteManager.jsで処理）
 
     // パワーアップを描画
     this.gameState.powerUps.forEach(powerUp => {
