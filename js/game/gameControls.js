@@ -91,6 +91,7 @@ DeliveryBirdGame.prototype.render = function() {
                     point.y >= -50 && point.y <= this.canvas.height + 50) {
                     this.ctx.save();
                     this.ctx.translate(point.x, point.y);
+                    // 敵の向きを270度右回りに調整（180度回転）
                     this.ctx.rotate((enemy.angle - 90) * Math.PI / 180);
                     this.ctx.font = '24px Arial';
                     this.ctx.textAlign = 'center';

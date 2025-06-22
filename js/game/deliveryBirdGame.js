@@ -18,7 +18,6 @@ class DeliveryBirdGame {
         this.lastUpdateTime = 0; // 最後の更新時刻
         this.keys = {};
         this.meimeiElement = null;
-        this.nameEntryState = null;
         this.detourSelection = 0; // 寄り道モーダルの選択状態（0-3）
         this.frameCount = 0; // フレームカウンター
         this.ignoreKeyInput = false; // キー入力を一時的に無視するフラグ
@@ -500,13 +499,9 @@ class DeliveryBirdGame {
         
         // ゲームオーバー画面を隠す
         this.safeAddClass('game-over-screen', 'hidden');
-        this.safeAddClass('name-entry-section', 'hidden');
         
         // マーカーをクリア
         this.clearDestinationMarkers();
-        
-        // 名前入力状態をクリア
-        this.nameEntryState = null;
         
         // 新しい配達先を生成
         this.gameLogic.generateDestinations();
@@ -573,7 +568,6 @@ class DeliveryBirdGame {
         
         // 全てのモーダルを閉じる
         this.safeAddClass('game-over-screen', 'hidden');
-        this.safeAddClass('name-entry-section', 'hidden');
         this.safeAddClass('destination-modal', 'hidden');
         this.safeAddClass('detour-modal', 'hidden');
         
@@ -589,9 +583,6 @@ class DeliveryBirdGame {
         
         // マーカーをクリア
         this.clearDestinationMarkers();
-        
-        // 名前入力状態をクリア
-        this.nameEntryState = null;
         
         // UIを更新
         this.gameLogic.generateDestinations();

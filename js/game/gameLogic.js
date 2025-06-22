@@ -265,7 +265,8 @@ class GameLogic {
             
             // 敵の移動（フレームレート独立）
             if (actualDeltaTime > 0 && enemy.speed > 0) {
-                const angleRad = (enemy.angle - 90) * Math.PI / 180;
+                // 敵の進行方向を270度右回りに調整（180度回転）
+                const angleRad = (enemy.angle + 180) * Math.PI / 180;
                 const deltaKm = enemy.speed * actualDeltaTime; // 実際の経過時間に基づく移動距離
                 const deltaLat = (deltaKm / 111.32) * Math.cos(angleRad);
                 // 緯度による経度の補正を適用
