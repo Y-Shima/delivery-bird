@@ -55,6 +55,31 @@ const LANG_EN = {
         select: "Space : Select destination"
     },
     
+    // Game status
+    status: {
+        stunned: "😵 Stunned",
+        powered: "⚡ Powered Up",
+        invincible: "✨ Invincible"
+    },
+    
+    // Arrival & Score
+    arrival: {
+        scoreEarned: "Score Earned: ",
+        cityArrived: "Arrived: "
+    },
+    
+    // Game Over
+    gameOver: {
+        restart: "Play Again",
+        returnToTitle: "Return to Title",
+        controls: "←→ to select, Space to confirm"
+    },
+    
+    // Powerup
+    powerup: {
+        collected: "Power Up! Double Speed!"
+    },
+    
     // City names (translations)
     cities: {
         "東京": "Tokyo",

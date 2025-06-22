@@ -13,7 +13,7 @@ const GAME_CONFIG = {
     DETOUR_DISTANCE: 300, // 寄り道判定距離（km）を大きくする
     ENEMY_SPAWN_DISTANCE: 1500, // 敵の出現距離（km）
     ENEMY_COUNT: 4, // 画面内の敵の数（基本数を増加）
-    POWERUP_COUNT: 20, // パワーアップアイテムの数
+    POWERUP_COUNT: 30, // パワーアップアイテムの数（20個から30個に増加）
     POWERUP_MIN_DISTANCE_FROM_CITY: 500 // 都市からの最小距離（km）
 };
 
@@ -126,6 +126,40 @@ function loadLanguage(lang) {
             currentLang = LANG_JA;
             console.log('Config: Loaded Japanese language pack (default)');
     }
+    
+    // UI要素を更新
+    updateUILanguage();
+}
+
+// UI要素の多言語対応を更新
+function updateUILanguage() {
+    // 基本的なUI要素
+    const elements = {
+        'destinations-title': 'ui.destinations',
+        'destination-modal-title': 'destinations.selectTitle',
+        'destination-controls': 'destinations.controls',
+        'detour-title': 'detour.title',
+        'detour-question': 'detour.question',
+        'detour-controls': 'detour.controls',
+        'arrival-score-label': 'arrival.scoreEarned',
+        'restart-btn': 'gameOver.restart',
+        'title-btn': 'gameOver.returnToTitle',
+        'game-over-controls': 'gameOver.controls',
+        'controls-rotate': 'controls.rotate',
+        'controls-speed': 'controls.speed',
+        'controls-select': 'controls.select',
+        'controls-rotate-old': 'controls.rotate',
+        'controls-speed-old': 'controls.speed',
+        'controls-select-old': 'controls.select'
+    };
+    
+    // 各要素のテキストを更新
+    Object.entries(elements).forEach(([elementId, translationKey]) => {
+        const element = document.getElementById(elementId);
+        if (element) {
+            element.textContent = t(translationKey);
+        }
+    });
 }
 
 // 翻訳関数

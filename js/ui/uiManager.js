@@ -121,13 +121,13 @@ class UIManager {
         if (statusElement) {
             let statusText = '';
             if (player.isStunned) {
-                statusText = '😵 足止め中';
+                statusText = t('status.stunned');
             } else if (player.isInvincible) {
                 const remainingTime = Math.ceil((player.invincibleEndTime - Date.now()) / 1000);
-                statusText = `✨ 無敵 (${remainingTime}s)`;
+                statusText = `${t('status.invincible')} (${remainingTime}s)`;
             } else if (player.isPoweredUp) {
-                const remainingTime = Math.ceil((player.powerUpEndTime - Date.now()) / 1000);
-                statusText = `⚡ パワーアップ (${remainingTime}s)`;
+                const remainingTime = Math.ceil((player.powerupEndTime - Date.now()) / 1000);
+                statusText = `${t('status.powered')} (${remainingTime}s)`;
             }
             statusElement.textContent = statusText;
         }

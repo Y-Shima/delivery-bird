@@ -59,7 +59,7 @@
             <h3 id="arrival-city-name">都市名</h3>
             <p id="arrival-city-description">都市の説明</p>
             <div class="arrival-score">
-                <span>獲得スコア: </span><span id="arrival-score-value">0</span>
+                <span id="arrival-score-label">獲得スコア: </span><span id="arrival-score-value">0</span>
             </div>
             <div class="modal-controls">
                 <p>スペース: 続ける</p>
@@ -70,10 +70,10 @@
     <!-- 配達先選択フローティングウィンドウ -->
     <div id="destination-modal" class="hidden">
         <div class="modal-content">
-            <h3>配達先を選択してください</h3>
+            <h3 id="destination-modal-title">配達先を選択してください</h3>
             <div id="destinations"></div>
             <div class="modal-controls">
-                <p>↑↓: 選択 | スペース: 決定</p>
+                <p id="destination-controls">↑↓: 選択 | スペース: 決定</p>
             </div>
         </div>
     </div>
@@ -81,13 +81,13 @@
     <!-- 寄り道モーダル -->
     <div id="detour-modal" class="hidden">
         <div class="detour-content">
-            <h3>配達依頼</h3>
-            <p>どの配達を受けますか？</p>
+            <h3 id="detour-title">配達依頼</h3>
+            <p id="detour-question">どの配達を受けますか？</p>
             <div id="detour-options">
                 <!-- 動的に生成される -->
             </div>
             <div class="detour-controls">
-                <p>↑↓: 選択 | スペース: 決定</p>
+                <p id="detour-controls">↑↓: 選択 | スペース: 決定</p>
             </div>
         </div>
     </div>
@@ -106,7 +106,7 @@
             
             <!-- 操作説明 -->
             <div class="game-over-controls">
-                <p>←→で選択、スペースで決定</p>
+                <p id="game-over-controls">←→で選択、スペースで決定</p>
             </div>
         </div>
     </div>

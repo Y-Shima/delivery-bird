@@ -14,5 +14,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // ゲーム画面を非表示にしてタイトル画面を表示
     document.getElementById('game-container').style.display = 'none';
     
+    // UI要素の多言語対応を再実行（DOM読み込み後）
+    setTimeout(() => {
+        updateUILanguage();
+    }, 100);
+    
     console.log('Delivery Bird Game initialized');
 });
