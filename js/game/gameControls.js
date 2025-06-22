@@ -76,32 +76,61 @@ DeliveryBirdGame.prototype.updateDestinationMarkers = function() {
 };
 
 DeliveryBirdGame.prototype.render = function() {
+    if (!this.ctx || !this.canvas || !this.map || !this.gameState) {
+        return;
+    }
+    
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     // 敵鳥を描画
-    this.gameState.enemies.forEach(enemy => {
-        const point = this.map.latLngToContainerPoint([enemy.lat, enemy.lng]);
-        if (point.x >= -50 && point.x <= this.canvas.width + 50 && 
-            point.y >= -50 && point.y <= this.canvas.height + 50) {
-            this.ctx.save();
-            this.ctx.translate(point.x, point.y);
-            this.ctx.rotate((enemy.angle - 90) * Math.PI / 180);
-            this.ctx.font = '24px Arial';
-            this.ctx.textAlign = 'center';
-            const enemyEmojis = ['🔴🐦', '🟡🐦', '🔵🐦'];
-            this.ctx.fillText(enemyEmojis[enemy.type], 0, 8);
-            this.ctx.restore();
-        }
-    });
+    if (this.gameState.enemies && Array.isArray(this.gameState.enemies)) {
+        this.gameState.enemies.forEach(enemy => {
+            if (enemy && typeof enemy.lat === 'number' && typeof enemy.lng === 'number') {
+                const point = this.map.latLngToContainerPoint([enemy.lat, enemy.lng]);
+                if (point && point.x >= -50 && point.x <= this.canvas.width + 50 && 
+                    point.y >= -50 && point.y <= this.canvas.height + 50) {
+                    this.ctx.save();
+                    this.ctx.translate(point.x, point.y);
+                    this.ctx.rotate((enemy.angle - 90) * Math.PI / 180);
+                    this.ctx.font = '24px Arial';
+                    this.ctx.textAlign = 'center';
+                    const enemyEmojis = ['🐦🔴', '🐦🟡', '🐦🔵'];
+                    const enemyType = enemy.type || 0;
+                    this.ctx.fillText(enemyEmojis[enemyType], 0, 8);
+                    this.ctx.restore();
+                }
+            }
+        });
+    }
 
     // パワーアップを描画
-    this.gameState.powerUps.forEach(powerUp => {
-        const point = this.map.latLngToContainerPoint([powerUp.lat, powerUp.lng]);
-        if (point.x >= -50 && point.x <= this.canvas.width + 50 && 
-            point.y >= -50 && point.y <= this.canvas.height + 50) {
-            this.ctx.font = '28px Arial';
-            this.ctx.textAlign = 'center';
-            this.ctx.fillText('⚡', point.x, point.y + 8);
-        }
-    });
+    if (this.gameState.powerups && Array.isArray(this.gameState.powerups)) {
+        this.gameState.powerups.forEach((powerup, index) => {
+            if (powerup && !powerup.collected && 
+                typeof powerup.lat === 'number' && typeof powerup.lng === 'number') {
+                const point = this.map.latLngToContainerPoint([powerup.lat, powerup.lng]);
+                if (point && point.x >= -50 && point.x <= this.canvas.width + 50 && 
+                    point.y >= -50 && point.y <= this.canvas.height + 50) {
+                    
+                    // 背景円を描画
+                    this.ctx.save();
+                    this.ctx.fillStyle = '#ffeb3b';
+                    this.ctx.strokeStyle = '#ff9800';
+                    this.ctx.lineWidth = 3;
+                    this.ctx.beginPath();
+                    this.ctx.arc(point.x, point.y, 15, 0, 2 * Math.PI);
+                    this.ctx.fill();
+                    this.ctx.stroke();
+                    
+                    // 雷マークを描画
+                    this.ctx.font = '20px Arial';
+                    this.ctx.textAlign = 'center';
+                    this.ctx.textBaseline = 'middle';
+                    this.ctx.fillStyle = '#333';
+                    this.ctx.fillText('⚡', point.x, point.y);
+                    this.ctx.restore();
+                }
+            }
+        });
+    }
 };

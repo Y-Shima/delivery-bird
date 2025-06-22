@@ -30,6 +30,65 @@ class GameLogic {
         return (speedLevel / 5) * maxSpeedKmPerSec;
     }
 
+    // パワーアップアイテムをランダムに配置
+    generatePowerups() {
+        console.log('Starting powerup generation...');
+        const powerups = [];
+        const maxAttempts = 1000; // 無限ループを防ぐ
+        
+        while (powerups.length < GAME_CONFIG.POWERUP_COUNT) {
+            let attempts = 0;
+            let validLocation = false;
+            
+            while (!validLocation && attempts < maxAttempts) {
+                // ランダムな緯度経度を生成
+                const lat = (Math.random() - 0.5) * 160; // -80 to 80 (極地を避ける)
+                const lng = (Math.random() - 0.5) * 360; // -180 to 180
+                
+                // 全ての都市から500km以上離れているかチェック
+                let farEnoughFromCities = true;
+                for (const city of WORLD_CITIES) {
+                    const distance = this.calculateDistance(lat, lng, city.lat, city.lng);
+                    if (distance < GAME_CONFIG.POWERUP_MIN_DISTANCE_FROM_CITY) {
+                        farEnoughFromCities = false;
+                        break;
+                    }
+                }
+                
+                // 他のパワーアップアイテムから200km以上離れているかチェック
+                let farEnoughFromOtherPowerups = true;
+                for (const powerup of powerups) {
+                    const distance = this.calculateDistance(lat, lng, powerup.lat, powerup.lng);
+                    if (distance < 200) {
+                        farEnoughFromOtherPowerups = false;
+                        break;
+                    }
+                }
+                
+                if (farEnoughFromCities && farEnoughFromOtherPowerups) {
+                    powerups.push({
+                        id: powerups.length,
+                        lat: lat,
+                        lng: lng,
+                        collected: false
+                    });
+                    validLocation = true;
+                }
+                
+                attempts++;
+            }
+            
+            // 最大試行回数に達した場合は諦める
+            if (attempts >= maxAttempts) {
+                console.warn(`パワーアップアイテム生成: ${powerups.length}個で停止（最大試行回数に達しました）`);
+                break;
+            }
+        }
+        
+        console.log(`パワーアップアイテム ${powerups.length}個を生成しました`);
+        return powerups;
+    }
+
     // ランダムに世界各地から3つの都市を選択
     generateDestinations() {
         this.gameState.destinations = [];
@@ -99,7 +158,7 @@ class GameLogic {
         }
 
         // パワーアップ状態チェック
-        if (player.isPoweredUp && currentTime > player.powerUpEndTime) {
+        if (player.isPoweredUp && currentTime > player.powerupEndTime) {
             player.isPoweredUp = false;
         }
 
@@ -132,10 +191,19 @@ class GameLogic {
     }
 
     updateEnemies() {
+        if (!this.gameState.enemies || !Array.isArray(this.gameState.enemies)) {
+            this.gameState.enemies = [];
+            return;
+        }
+        
         const currentTime = Date.now();
         const deltaTime = (currentTime - this.lastUpdateTime) / 1000; // 秒単位
         
         this.gameState.enemies.forEach(enemy => {
+            if (!enemy || !this.gameState.player) {
+                return;
+            }
+            
             const player = this.gameState.player;
             
             // 敵の速度をプレイヤーのスピードレベル2相当に設定（常に移動）
@@ -182,27 +250,42 @@ class GameLogic {
     checkCollisions() {
         const player = this.gameState.player;
 
-        // 敵との衝突チェック
-        this.gameState.enemies.forEach(enemy => {
-            const distance = this.calculateDistance(player.lat, player.lng, enemy.lat, enemy.lng);
-            // 無敵状態でない場合のみ衝突判定
-            if (distance < 50 && !player.isStunned && !player.isInvincible) { // 50km以内で衝突
-                player.isStunned = true;
-                player.stunEndTime = Date.now() + GAME_CONFIG.STUN_DURATION * 1000;
-                console.log('Player stunned by enemy collision');
-            }
-        });
+        // パワーアップアイテムとの収集判定
+        if (this.gameState.powerups && Array.isArray(this.gameState.powerups)) {
+            this.gameState.powerups.forEach(powerup => {
+                if (!powerup.collected) {
+                    const distance = this.calculateDistance(player.lat, player.lng, powerup.lat, powerup.lng);
+                    if (distance < 100) { // 100km以内で収集
+                        powerup.collected = true;
+                        // パワーアップ効果を適用
+                        player.isPoweredUp = true;
+                        player.powerupEndTime = Date.now() + GAME_CONFIG.POWERUP_DURATION * 1000;
+                        console.log('Powerup collected! Player powered up for', GAME_CONFIG.POWERUP_DURATION, 'seconds');
+                        
+                        // UIに通知
+                        if (this.uiManager) {
+                            this.uiManager.showPowerupMessage();
+                        }
+                    }
+                }
+            });
+        }
 
-        // パワーアップとの衝突チェック
-        this.gameState.powerUps = this.gameState.powerUps.filter(powerUp => {
-            const distance = this.calculateDistance(player.lat, player.lng, powerUp.lat, powerUp.lng);
-            if (distance < 50) {
-                player.isPoweredUp = true;
-                player.powerUpEndTime = Date.now() + GAME_CONFIG.POWERUP_DURATION * 1000;
-                return false; // パワーアップを削除
-            }
-            return true;
-        });
+        // 敵との衝突チェック
+        if (this.gameState.enemies && Array.isArray(this.gameState.enemies)) {
+            this.gameState.enemies.forEach(enemy => {
+                if (enemy && typeof enemy.lat === 'number' && typeof enemy.lng === 'number') {
+                    const distance = this.calculateDistance(player.lat, player.lng, enemy.lat, enemy.lng);
+                    // 無敵状態でない場合のみ衝突判定
+                    if (distance < 50 && !player.isStunned && !player.isInvincible) { // 50km以内で衝突
+                        player.isStunned = true;
+                        player.stunEndTime = Date.now() + GAME_CONFIG.STUN_DURATION * 1000;
+                        console.log('Player stunned by enemy collision');
+                    }
+                }
+            });
+        }
+
     }
 
     // 目的地への到着チェック
@@ -414,17 +497,6 @@ class GameLogic {
                 type: Math.floor(Math.random() * 3),
                 targetLat: player.lat,
                 targetLng: player.lng
-            });
-        }
-    }
-
-    spawnPowerUps() {
-        this.gameState.powerUps = [];
-        // パワーアップアイテムを生成
-        if (Math.random() < 0.3) { // 30%の確率
-            this.gameState.powerUps.push({
-                lat: this.gameState.player.lat + (Math.random() - 0.5) * 10,
-                lng: this.gameState.player.lng + (Math.random() - 0.5) * 10
             });
         }
     }

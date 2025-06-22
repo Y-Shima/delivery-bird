@@ -12,6 +12,7 @@ class DeliveryBirdGame {
         this.canvas = null;
         this.ctx = null;
         this.destinationMarkers = [];
+        this.powerupMarkers = []; // パワーアップマーカー配列を追加
         this.gameLoop = null;
         this.timerInterval = null;
         this.lastUpdateTime = 0; // 最後の更新時刻
@@ -450,7 +451,10 @@ class DeliveryBirdGame {
         
         this.gameLogic.generateDestinations();
         this.gameLogic.spawnEnemies();
-        this.gameLogic.spawnPowerUps();
+        
+        // パワーアップアイテムを生成
+        this.gameState.powerups = this.gameLogic.generatePowerups();
+        
         this.updateMapCenter();
         this.updateMeimeiState();
         this.addDestinationMarkers();
@@ -539,7 +543,9 @@ class DeliveryBirdGame {
         
         // 敵とパワーアップを生成
         this.gameLogic.spawnEnemies();
-        this.gameLogic.spawnPowerUps();
+        
+        // パワーアップアイテムを生成
+        this.gameState.powerups = this.gameLogic.generatePowerups();
         
         // マップとプレイヤー状態を更新
         this.updateMapCenter();
@@ -621,6 +627,9 @@ class DeliveryBirdGame {
         this.gameLogic.maintainEnemyCount(); // 敵の数を維持
         this.gameLogic.checkCollisions();
         
+        // パワーアップマーカーを更新（収集されたアイテムを削除）
+        this.updatePowerupMarkers();
+        
         // 目的地到着チェック
         const arrivedDestinations = this.gameLogic.checkDestinationArrival();
         if (arrivedDestinations.length > 0) {
@@ -663,7 +672,10 @@ class DeliveryBirdGame {
             this.updateDestinationMarkers();
         }
         
-        this.render();
+        // renderメソッドが存在する場合のみ呼び出し
+        if (typeof this.render === 'function') {
+            this.render();
+        }
     }
 
     updateTimer() {
@@ -768,5 +780,150 @@ class DeliveryBirdGame {
         this.gameState.detourCity = null;
         this.gameState.selectedDetourIndex = 0;
         this.uiManager.hideDetourModal();
+    }
+
+    // マーカー管理メソッド
+    addDestinationMarkers() {
+        this.clearDestinationMarkers();
+        this.addPowerupMarkers();
+        this.updateDestinationMarkers();
+    }
+
+    clearDestinationMarkers() {
+        // 既存のマーカーをクリア
+        if (this.destinationMarkers && Array.isArray(this.destinationMarkers)) {
+            this.destinationMarkers.forEach(marker => {
+                if (marker && this.map) {
+                    this.map.removeLayer(marker);
+                }
+            });
+        }
+        if (this.powerupMarkers && Array.isArray(this.powerupMarkers)) {
+            this.powerupMarkers.forEach(marker => {
+                if (marker && this.map) {
+                    this.map.removeLayer(marker);
+                }
+            });
+        }
+        this.destinationMarkers = [];
+        this.powerupMarkers = [];
+    }
+
+    updateDestinationMarkers() {
+        // 目的地マーカーを更新
+        if (this.gameState.destinationSlots && this.map) {
+            this.gameState.destinationSlots.forEach((destination, index) => {
+                if (destination) {
+                    try {
+                        const marker = L.marker([destination.lat, destination.lng], {
+                            icon: L.divIcon({
+                                className: 'destination-marker',
+                                html: `<div class="destination-icon">${index + 1}</div>`,
+                                iconSize: [30, 30],
+                                iconAnchor: [15, 15]
+                            })
+                        }).addTo(this.map);
+                        
+                        if (!this.destinationMarkers) {
+                            this.destinationMarkers = [];
+                        }
+                        this.destinationMarkers.push(marker);
+                    } catch (error) {
+                        console.error('Error adding destination marker:', error);
+                    }
+                }
+            });
+        }
+    }
+
+    addPowerupMarkers() {
+        // パワーアップアイテムのマーカーを追加
+        if (this.gameState.powerups && Array.isArray(this.gameState.powerups) && this.map) {
+            let addedMarkers = 0;
+            this.gameState.powerups.forEach((powerup, index) => {
+                if (!powerup.collected) {
+                    try {
+                        // より目立つマーカーを作成
+                        const marker = L.marker([powerup.lat, powerup.lng], {
+                            icon: L.divIcon({
+                                className: 'powerup-marker',
+                                html: `
+                                    <div class="powerup-icon" style="
+                                        width: 30px !important;
+                                        height: 30px !important;
+                                        background: radial-gradient(circle, #ffeb3b, #ffc107) !important;
+                                        border: 3px solid #ff9800 !important;
+                                        border-radius: 50% !important;
+                                        display: flex !important;
+                                        align-items: center !important;
+                                        justify-content: center !important;
+                                        font-size: 16px !important;
+                                        font-weight: bold !important;
+                                        color: #333 !important;
+                                        box-shadow: 0 4px 12px rgba(255, 193, 7, 0.8) !important;
+                                        z-index: 1000 !important;
+                                        position: relative !important;
+                                    ">⚡</div>
+                                `,
+                                iconSize: [30, 30],
+                                iconAnchor: [15, 15]
+                            }),
+                            zIndexOffset: 1000
+                        }).addTo(this.map);
+                        
+                        if (!this.powerupMarkers) {
+                            this.powerupMarkers = [];
+                        }
+                        this.powerupMarkers.push(marker);
+                        addedMarkers++;
+                    } catch (error) {
+                        console.error('Error adding powerup marker:', error);
+                    }
+                }
+            });
+        }
+    }
+
+    updatePowerupMarkers() {
+        // 収集されたパワーアップアイテムのマーカーを削除
+        if (!this.powerupMarkers || !Array.isArray(this.powerupMarkers) || 
+            !this.gameState.powerups || !Array.isArray(this.gameState.powerups) || 
+            !this.map) {
+            return;
+        }
+        
+        try {
+            // 収集されたパワーアップアイテムのマーカーを削除
+            const markersToRemove = [];
+            
+            this.powerupMarkers.forEach((marker, markerIndex) => {
+                if (!marker || !marker.getLatLng) {
+                    markersToRemove.push(markerIndex);
+                    return;
+                }
+                
+                // マーカーに対応するパワーアップアイテムを探す
+                const markerLatLng = marker.getLatLng();
+                const correspondingPowerup = this.gameState.powerups.find(powerup => 
+                    powerup && 
+                    Math.abs(powerup.lat - markerLatLng.lat) < 0.001 && 
+                    Math.abs(powerup.lng - markerLatLng.lng) < 0.001
+                );
+                
+                if (correspondingPowerup && correspondingPowerup.collected) {
+                    this.map.removeLayer(marker);
+                    markersToRemove.push(markerIndex);
+                }
+            });
+            
+            // 削除するマーカーを配列から除去（逆順で削除）
+            markersToRemove.reverse().forEach(index => {
+                this.powerupMarkers.splice(index, 1);
+            });
+        } catch (error) {
+            console.error('Error updating powerup markers:', error);
+            // エラーが発生した場合は配列をリセット
+            this.powerupMarkers = [];
+        }
     }
 }

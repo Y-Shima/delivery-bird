@@ -28,10 +28,10 @@ class GameState {
             isInvincible: false, // 無敵状態
             invincibleEndTime: 0, // 無敵終了時間
             isPoweredUp: false,
-            powerUpEndTime: 0
+            powerupEndTime: 0 // powerUpEndTime から powerupEndTime に統一
         };
         this.enemies = [];
-        this.powerUps = [];
+        this.powerups = []; // パワーアップアイテム配列を初期化
         this.hiScore = this.loadHiScore();
     }
 
@@ -75,10 +75,10 @@ class GameState {
             isInvincible: false, // 無敵状態
             invincibleEndTime: 0, // 無敵終了時間
             isPoweredUp: false,
-            powerUpEndTime: 0
+            powerupEndTime: 0 // powerUpEndTime から powerupEndTime に統一
         };
         this.enemies = [];
-        this.powerUps = [];
+        this.powerups = []; // パワーアップアイテム配列をリセット
     }
 
     // 空いているスロットのインデックスを取得

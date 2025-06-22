@@ -288,4 +288,75 @@ class UIManager {
         }, 100);
     }
 
+    showPowerupMessage() {
+        // パワーアップ収集時のメッセージを表示（多言語対応）
+        let message = '⚡ パワーアップ！スピード2倍！';
+        if (typeof t === 'function') {
+            try {
+                message = '⚡ ' + (t('powerup.collected') || 'パワーアップ！スピード2倍！');
+            } catch (e) {
+                // 翻訳関数でエラーが発生した場合はデフォルトメッセージを使用
+                console.warn('Translation error for powerup message:', e);
+            }
+        }
+        
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'powerup-message';
+        messageDiv.textContent = message;
+        messageDiv.style.cssText = `
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #ffeb3b, #ffc107);
+            color: #333;
+            padding: 15px 25px;
+            border-radius: 25px;
+            font-size: 18px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(255, 193, 7, 0.6);
+            z-index: 10000;
+            animation: powerup-message 3s ease-out forwards;
+        `;
+        
+        // アニメーションのCSSを追加
+        if (!document.getElementById('powerup-message-style')) {
+            const style = document.createElement('style');
+            style.id = 'powerup-message-style';
+            style.textContent = `
+                @keyframes powerup-message {
+                    0% {
+                        opacity: 0;
+                        transform: translate(-50%, -50%) scale(0.5);
+                    }
+                    20% {
+                        opacity: 1;
+                        transform: translate(-50%, -50%) scale(1.1);
+                    }
+                    30% {
+                        transform: translate(-50%, -50%) scale(1);
+                    }
+                    70% {
+                        opacity: 1;
+                        transform: translate(-50%, -50%) scale(1);
+                    }
+                    100% {
+                        opacity: 0;
+                        transform: translate(-50%, -50%) scale(0.8);
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        document.body.appendChild(messageDiv);
+        
+        // 3秒後にメッセージを削除
+        setTimeout(() => {
+            if (messageDiv.parentNode) {
+                messageDiv.parentNode.removeChild(messageDiv);
+            }
+        }, 3000);
+    }
+
 }
