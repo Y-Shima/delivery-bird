@@ -12,7 +12,7 @@ const GAME_CONFIG = {
     MAX_DESTINATION_SLOTS: 3, // 最大目的地スロット数
     DETOUR_DISTANCE: 300, // 寄り道判定距離（km）を大きくする
     ENEMY_SPAWN_DISTANCE: 1500, // 敵の出現距離（km）
-    ENEMY_COUNT: 2, // 画面内の敵の数
+    ENEMY_COUNT: 4, // 画面内の敵の数（基本数を増加）
     POWERUP_COUNT: 20, // パワーアップアイテムの数
     POWERUP_MIN_DISTANCE_FROM_CITY: 500 // 都市からの最小距離（km）
 };

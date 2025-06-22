@@ -199,38 +199,74 @@ class GameLogic {
         const currentTime = Date.now();
         const deltaTime = (currentTime - this.lastUpdateTime) / 1000; // 秒単位
         
-        this.gameState.enemies.forEach(enemy => {
+        // 最初の呼び出しまたは異常に大きなdeltaTimeの場合は、適切な値に設定
+        const actualDeltaTime = (deltaTime <= 0 || deltaTime > 0.1) ? 1/60 : deltaTime; // 60FPS相当
+        
+        this.gameState.enemies.forEach((enemy, index) => {
             if (!enemy || !this.gameState.player) {
                 return;
             }
             
             const player = this.gameState.player;
             
-            // 敵の速度をプレイヤーのスピードレベル2相当に設定（常に移動）
-            enemy.speed = this.calculateSpeedKmPerSecond(2); // スピードレベル2固定
+            // 敵の現在の角度を保存（急回転防止のため）
+            let currentAngle = enemy.angle || 0;
+            let targetAngle = currentAngle;
             
+            // 敵の速度を敵のタイプに応じて設定（常に移動）
             switch (enemy.type) {
-                case 0: // 赤: プレイヤーに向かう
-                    const angleToPlayer = Math.atan2(player.lng - enemy.lng, player.lat - enemy.lat) * 180 / Math.PI;
-                    enemy.angle = angleToPlayer;
+                case 0: // 赤: プレイヤーに向かう（スピードレベル3）
+                    enemy.speed = this.calculateSpeedKmPerSecond(3);
+                    targetAngle = Math.atan2(player.lng - enemy.lng, player.lat - enemy.lat) * 180 / Math.PI;
                     break;
-                case 1: // 黄: ランダム
-                    if (Math.random() < 0.1) {
-                        enemy.angle += (Math.random() - 0.5) * 60;
+                case 1: // 黄: ランダム（スピードレベル2）
+                    enemy.speed = this.calculateSpeedKmPerSecond(2);
+                    // より頻繁に方向転換（5%の確率で方向変更、小さな角度変更）
+                    if (Math.random() < 0.05) {
+                        targetAngle = currentAngle + (Math.random() - 0.5) * 30; // 最大15度の変更
+                    } else {
+                        targetAngle = currentAngle; // 現在の方向を維持
                     }
                     break;
-                case 2: // 青: 先回り
-                    const predictedLat = player.lat + Math.cos((player.angle - 90) * Math.PI / 180) * player.speed * 0.01;
-                    const predictedLng = player.lng + Math.sin((player.angle - 90) * Math.PI / 180) * player.speed * 0.01;
-                    const angleToPredict = Math.atan2(predictedLng - enemy.lng, predictedLat - enemy.lat) * 180 / Math.PI;
-                    enemy.angle = angleToPredict;
+                case 2: // 青: 先回り（スピードレベル2）
+                    enemy.speed = this.calculateSpeedKmPerSecond(2);
+                    // プレイヤーの進行方向を予測して先回り
+                    if (player.speed > 0) {
+                        const predictDistance = player.speed * 3; // 3秒先を予測
+                        const predictedLat = player.lat + Math.cos((player.angle - 90) * Math.PI / 180) * (predictDistance / 111.32);
+                        const predictedLng = player.lng + Math.sin((player.angle - 90) * Math.PI / 180) * (predictDistance / 111.32);
+                        targetAngle = Math.atan2(predictedLng - enemy.lng, predictedLat - enemy.lat) * 180 / Math.PI;
+                    } else {
+                        // プレイヤーが停止している場合は直接向かう
+                        targetAngle = Math.atan2(player.lng - enemy.lng, player.lat - enemy.lat) * 180 / Math.PI;
+                    }
                     break;
             }
-
+            
+            // 角度の正規化（-180 to 180）
+            while (targetAngle > 180) targetAngle -= 360;
+            while (targetAngle < -180) targetAngle += 360;
+            while (currentAngle > 180) currentAngle -= 360;
+            while (currentAngle < -180) currentAngle += 360;
+            
+            // 急回転を防ぐ（最大回転速度を制限）
+            let angleDiff = targetAngle - currentAngle;
+            if (angleDiff > 180) angleDiff -= 360;
+            if (angleDiff < -180) angleDiff += 360;
+            
+            const maxTurnRate = 90; // 1秒間に最大90度回転
+            const maxTurnThisFrame = maxTurnRate * actualDeltaTime;
+            
+            if (Math.abs(angleDiff) > maxTurnThisFrame) {
+                angleDiff = angleDiff > 0 ? maxTurnThisFrame : -maxTurnThisFrame;
+            }
+            
+            enemy.angle = currentAngle + angleDiff;
+            
             // 敵の移動（フレームレート独立）
-            if (deltaTime > 0) {
+            if (actualDeltaTime > 0 && enemy.speed > 0) {
                 const angleRad = (enemy.angle - 90) * Math.PI / 180;
-                const deltaKm = enemy.speed * deltaTime; // 実際の経過時間に基づく移動距離
+                const deltaKm = enemy.speed * actualDeltaTime; // 実際の経過時間に基づく移動距離
                 const deltaLat = (deltaKm / 111.32) * Math.cos(angleRad);
                 // 緯度による経度の補正を適用
                 const latRad = enemy.lat * Math.PI / 180;
@@ -245,6 +281,9 @@ class GameLogic {
                 if (enemy.lng < -180) enemy.lng += 360;
             }
         });
+        
+        // lastUpdateTime を更新
+        this.lastUpdateTime = currentTime;
     }
 
     checkCollisions() {
@@ -445,7 +484,7 @@ class GameLogic {
     spawnEnemies() {
         this.gameState.enemies = [];
         // ゲームモードに応じた敵の数を計算
-        const enemyCount = GAME_CONFIG.ENEMY_COUNT * currentGameMode.enemyMultiplier;
+        const enemyCount = GAME_CONFIG.ENEMY_COUNT * (typeof currentGameMode !== 'undefined' ? currentGameMode.enemyMultiplier : 1);
         
         // 敵鳥を画面外から生成
         for (let i = 0; i < enemyCount; i++) {
@@ -457,12 +496,15 @@ class GameLogic {
             const enemyLat = this.gameState.player.lat + (distance / 111.32) * Math.cos(angleRad);
             const enemyLng = this.gameState.player.lng + (distance / 111.32) * Math.sin(angleRad);
             
+            const enemyType = Math.floor(Math.random() * 3); // 0: 赤, 1: 黄, 2: 青
+            const enemySpeed = enemyType === 0 ? this.calculateSpeedKmPerSecond(3) : this.calculateSpeedKmPerSecond(2);
+            
             this.gameState.enemies.push({
                 lat: enemyLat,
                 lng: enemyLng,
-                angle: Math.random() * 360,
-                speed: this.calculateSpeedKmPerSecond(2), // スピードレベル2固定
-                type: Math.floor(Math.random() * 3), // 0: 赤, 1: 黄, 2: 青
+                angle: Math.random() * 360, // 初期角度
+                speed: enemySpeed, // タイプに応じた速度
+                type: enemyType,
                 targetLat: this.gameState.player.lat,
                 targetLng: this.gameState.player.lng
             });
@@ -473,14 +515,17 @@ class GameLogic {
     maintainEnemyCount() {
         const player = this.gameState.player;
         
+        // ゲームモードに応じた敵の数を計算
+        const targetEnemyCount = GAME_CONFIG.ENEMY_COUNT * (typeof currentGameMode !== 'undefined' ? currentGameMode.enemyMultiplier : 1);
+        
         // 画面外に出た敵を削除
         this.gameState.enemies = this.gameState.enemies.filter(enemy => {
             const distance = this.calculateDistance(player.lat, player.lng, enemy.lat, enemy.lng);
-            return distance <= GAME_CONFIG.ENEMY_SPAWN_DISTANCE * 1.2; // 少し余裕を持たせる
+            return distance <= GAME_CONFIG.ENEMY_SPAWN_DISTANCE * 1.5; // 少し余裕を持たせる
         });
 
         // 敵の数が足りない場合は補充
-        while (this.gameState.enemies.length < GAME_CONFIG.ENEMY_COUNT) {
+        while (this.gameState.enemies.length < targetEnemyCount) {
             // 画面外のランダムな位置に生成
             const angle = Math.random() * 360;
             const distance = GAME_CONFIG.ENEMY_SPAWN_DISTANCE * (0.8 + Math.random() * 0.4); // 距離にばらつきを持たせる
@@ -489,12 +534,15 @@ class GameLogic {
             const enemyLat = player.lat + (distance / 111.32) * Math.cos(angleRad);
             const enemyLng = player.lng + (distance / 111.32) * Math.sin(angleRad);
             
+            const enemyType = Math.floor(Math.random() * 3); // 0: 赤, 1: 黄, 2: 青
+            const enemySpeed = enemyType === 0 ? this.calculateSpeedKmPerSecond(3) : this.calculateSpeedKmPerSecond(2);
+            
             this.gameState.enemies.push({
                 lat: enemyLat,
                 lng: enemyLng,
-                angle: Math.random() * 360,
-                speed: this.calculateSpeedKmPerSecond(2), // スピードレベル2固定
-                type: Math.floor(Math.random() * 3),
+                angle: Math.random() * 360, // 初期角度
+                speed: enemySpeed, // タイプに応じた速度
+                type: enemyType,
                 targetLat: player.lat,
                 targetLng: player.lng
             });
