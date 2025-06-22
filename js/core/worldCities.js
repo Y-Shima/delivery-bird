@@ -62,6 +62,7 @@ const WORLD_CITIES = [
     
     // その他の国（1箇所ずつ）
     { name: "アムステルダム", lat: 52.3676, lng: 4.9041, country: "オランダ" },
+    { name: "レイキャビク", lat: 64.1466, lng: -21.9426, country: "アイスランド" },
     { name: "ストックホルム", lat: 59.3293, lng: 18.0686, country: "スウェーデン" },
     { name: "コペンハーゲン", lat: 55.6761, lng: 12.5683, country: "デンマーク" },
     { name: "オスロ", lat: 59.9139, lng: 10.7522, country: "ノルウェー" },
@@ -71,6 +72,7 @@ const WORLD_CITIES = [
     { name: "ブリュッセル", lat: 50.8503, lng: 4.3517, country: "ベルギー" },
     { name: "プラハ", lat: 50.0755, lng: 14.4378, country: "チェコ" },
     { name: "ワルシャワ", lat: 52.2297, lng: 21.0122, country: "ポーランド" },
+    { name: "キーウ", lat: 50.4501, lng: 30.5234, country: "ウクライナ" },
     { name: "ブダペスト", lat: 47.4979, lng: 19.0402, country: "ハンガリー" },
     { name: "アテネ", lat: 37.9838, lng: 23.7275, country: "ギリシャ" },
     { name: "リスボン", lat: 38.7223, lng: -9.1393, country: "ポルトガル" },
@@ -96,18 +98,15 @@ const WORLD_CITIES = [
     { name: "テヘラン", lat: 35.6892, lng: 51.3890, country: "イラン" },
     { name: "バグダッド", lat: 33.3152, lng: 44.3661, country: "イラク" },
     { name: "ダマスカス", lat: 33.5138, lng: 36.2765, country: "シリア" },
-    { name: "ベイルート", lat: 33.8938, lng: 35.5018, country: "レバノン" },
     { name: "アンマン", lat: 31.9454, lng: 35.9284, country: "ヨルダン" },
-    { name: "エルサレム", lat: 31.7683, lng: 35.2137, country: "イスラエル" },
     { name: "アンカラ", lat: 39.9334, lng: 32.8597, country: "トルコ" },
     
     // 中東・アフリカ
     { name: "ドバイ", lat: 25.2048, lng: 55.2708, country: "UAE" },
-    { name: "ドーハ", lat: 25.2854, lng: 51.5310, country: "カタール" },
-    { name: "クウェートシティ", lat: 29.3759, lng: 47.9774, country: "クウェート" },
-    { name: "マナーマ", lat: 26.0667, lng: 50.5577, country: "バーレーン" },
-    { name: "マスカット", lat: 23.5859, lng: 58.4059, country: "オマーン" },
     { name: "リヤド", lat: 24.7136, lng: 46.6753, country: "サウジアラビア" },
+    { name: "マスカット", lat: 23.5859, lng: 58.4059, country: "オマーン" },
+    { name: "タシケント", lat: 41.2995, lng: 69.2401, country: "ウズベキスタン" },
+    { name: "ウランバートル", lat: 47.8864, lng: 106.9057, country: "モンゴル" },
     { name: "カイロ", lat: 30.0444, lng: 31.2357, country: "エジプト" },
     { name: "カサブランカ", lat: 33.5731, lng: -7.5898, country: "モロッコ" },
     { name: "チュニス", lat: 36.8065, lng: 10.1815, country: "チュニジア" },
@@ -144,7 +143,8 @@ const WORLD_CITIES = [
     { name: "パナマシティ", lat: 8.9824, lng: -79.5199, country: "パナマ" },
     { name: "ハバナ", lat: 23.1136, lng: -82.3666, country: "キューバ" },
     
-    // オセアニア
+    // オセアニア・太平洋
     { name: "ウェリントン", lat: -41.2865, lng: 174.7762, country: "ニュージーランド" },
-    { name: "スバ", lat: -18.1248, lng: 178.4501, country: "フィジー" }
+    { name: "スバ", lat: -18.1248, lng: 178.4501, country: "フィジー" },
+    { name: "ホノルル", lat: 21.3099, lng: -157.8581, country: "ハワイ" }
 ];
