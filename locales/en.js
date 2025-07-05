@@ -2,12 +2,13 @@
 const LANG_EN = {
     // UI elements
     ui: {
-        hiScore: "HI-SCORE",
+        hiScore: "HIGH-SCORE",
         score: "SCORE",
         time: "TIME",
         speed: "SPEED",
         destinations: "Destinations",
-        currentLocation: "Current Location"
+        currentLocation: "Current Location",
+        emptySlot: "Empty"
     },
     
     // Game screens
@@ -42,6 +43,7 @@ const LANG_EN = {
     // Detour
     detour: {
         title: "Delivery Request",
+        titleSuffix: " Delivery Request",
         question: "Which delivery would you like to accept?",
         decline: "Decline all requests",
         controls: "↑↓: Select | Space: Confirm"
@@ -65,7 +67,8 @@ const LANG_EN = {
     // Arrival & Score
     arrival: {
         scoreEarned: "Score Earned: ",
-        cityArrived: "Arrived: "
+        cityArrived: "Arrived: ",
+        continueControl: "Space: Continue"
     },
     
     // Game Over
@@ -413,14 +416,9 @@ const LANG_EN = {
         "イラン": "Iran",
         "イラク": "Iraq",
         "シリア": "Syria",
-        "レバノン": "Lebanon",
         "ヨルダン": "Jordan",
-        "イスラエル": "Israel",
         "トルコ": "Turkey",
         "UAE": "UAE",
-        "カタール": "Qatar",
-        "クウェート": "Kuwait",
-        "バーレーン": "Bahrain",
         "オマーン": "Oman",
         "サウジアラビア": "Saudi Arabia",
         "エジプト": "Egypt",
@@ -454,6 +452,39 @@ const LANG_EN = {
         "パナマ": "Panama",
         "キューバ": "Cuba",
         "ニュージーランド": "New Zealand",
-        "フィジー": "Fiji"
+        "フィジー": "Fiji",
+        "アイスランド": "Iceland",
+        "ルーマニア": "Romania",
+        "ブルガリア": "Bulgaria",
+        "セルビア": "Serbia",
+        "クロアチア": "Croatia",
+        "ラトビア": "Latvia",
+        "エストニア": "Estonia",
+        "ベラルーシ": "Belarus",
+        "ウクライナ": "Ukraine",
+        "マルタ": "Malta",
+        "アルバニア": "Albania",
+        "コンゴ民主共和国": "DR Congo",
+        "アンゴラ": "Angola",
+        "ジンバブエ": "Zimbabwe",
+        "ザンビア": "Zambia",
+        "マリ": "Mali",
+        "モーリタニア": "Mauritania",
+        "マダガスカル": "Madagascar",
+        "モザンビーク": "Mozambique",
+        "カメルーン": "Cameroon",
+        "ギニア": "Guinea",
+        "マラウイ": "Malawi",
+        "リベリア": "Liberia",
+        "カザフスタン": "Kazakhstan",
+        "アゼルバイジャン": "Azerbaijan",
+        "ジョージア": "Georgia",
+        "アルメニア": "Armenia",
+        "ホンジュラス": "Honduras",
+        "ジャマイカ": "Jamaica",
+        "エルサルバドル": "El Salvador",
+        "パプアニューギニア": "Papua New Guinea",
+        "ウズベキスタン": "Uzbekistan",
+        "モンゴル": "Mongolia"
     }
 };

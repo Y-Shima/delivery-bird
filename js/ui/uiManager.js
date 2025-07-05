@@ -20,7 +20,8 @@ class UIManager {
             'game-title': t('game.title'),
             'game-subtitle': t('game.subtitle'),
             'start-btn': t('game.gameStart'),
-            'restart-btn': t('game.playAgain')
+            'restart-btn': t('game.playAgain'),
+            'arrival-continue-control': t('arrival.continueControl')
         };
 
         Object.entries(elements).forEach(([id, text]) => {
@@ -56,6 +57,9 @@ class UIManager {
         
         // 獲得スコアを表示
         scoreValue.textContent = score;
+        
+        // 操作説明を多言語化
+        document.getElementById('arrival-continue-control').textContent = t('arrival.continueControl');
         
         // モーダルを表示
         modal.classList.remove('hidden');
@@ -166,7 +170,7 @@ class UIManager {
                 div.classList.add('empty');
                 div.innerHTML = `
                     <div class="slot-number">${index + 1}</div>
-                    <div class="empty-slot">空き</div>
+                    <div class="empty-slot">${t('ui.emptySlot')}</div>
                 `;
             }
             
@@ -217,7 +221,7 @@ class UIManager {
         const optionsContainer = document.getElementById('detour-options');
         
         // タイトルと説明を多言語対応
-        document.querySelector('#detour-modal h3').textContent = `${translateCity(detourCity.name)}で配達依頼`;
+        document.querySelector('#detour-modal h3').textContent = `${translateCity(detourCity.name)}${t('detour.titleSuffix')}`;
         document.querySelector('#detour-modal p').textContent = t('detour.question');
         document.querySelector('#detour-modal .detour-controls p').textContent = t('detour.controls');
         
@@ -275,7 +279,7 @@ class UIManager {
         document.querySelector('#game-over-screen h2').textContent = t('game.gameOver');
         document.getElementById('final-score').innerHTML = `${t('game.finalScore')}: <span id="final-score-value">${this.gameState.score}</span>`;
         
-        // HI-SCOREを更新
+        // HIGH-SCOREを更新
         this.gameState.saveHiScore();
         
         // ゲームオーバー画面を表示

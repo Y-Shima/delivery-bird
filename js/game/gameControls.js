@@ -17,6 +17,7 @@ DeliveryBirdGame.prototype.confirmDestination = function() {
     // スロットに追加
     if (this.gameState.addToSlot(destination)) {
         this.gameState.canSelectDestination = false; // 目的地選択を無効化
+        this.gameState.isJustArrived = false; // 到着直後フラグをリセット（寄り道を有効にする）
         this.closeDestinationModal();
         this.updateDestinationMarkers(); // マーカーの色を更新
         this.uiManager.updateUI();

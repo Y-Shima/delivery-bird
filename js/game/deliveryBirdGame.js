@@ -760,6 +760,7 @@ class DeliveryBirdGame {
         this.gameState.currentCity = this.gameState.detourCity;
         this.gameState.player.lat = this.gameState.detourCity.lat;
         this.gameState.player.lng = this.gameState.detourCity.lng;
+        this.gameState.isJustArrived = false; // 到着直後フラグをリセット
         this.updateMapCenter();
         
         this.hideDetourModal();

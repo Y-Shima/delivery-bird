@@ -351,7 +351,9 @@ class GameLogic {
 
     // 寄り道都市への到着チェック
     checkDetourArrival() {
-        if (this.gameState.isSlotsFull() || this.gameState.isDetourModalOpen) {
+        if (this.gameState.isSlotsFull() || 
+            this.gameState.isDetourModalOpen || 
+            this.gameState.isJustArrived) {
             return null;
         }
 
@@ -454,6 +456,9 @@ class GameLogic {
         // スピードを0にする
         this.gameState.player.speedLevel = 0;
         
+        // 到着直後フラグを設定（寄り道を無効にする）
+        this.gameState.isJustArrived = true;
+        
         // スコア加算
         this.gameState.score += destination.reward;
         
@@ -475,6 +480,7 @@ class GameLogic {
         // スロットに追加
         if (this.gameState.addToSlot(detourCity)) {
             console.log('Added to slot successfully'); // デバッグ用
+            this.gameState.isJustArrived = false; // 到着直後フラグをリセット
             return true;
         }
         

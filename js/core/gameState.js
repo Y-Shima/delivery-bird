@@ -14,6 +14,7 @@ class GameState {
         this.visitedCities = new Set(); // 訪問済み都市（配達済み）
         this.canSelectDestination = true; // 目的地選択可能フラグ
         this.isDetourModalOpen = false; // 寄り道モーダル表示フラグ
+        this.isJustArrived = false; // 到着直後フラグ（寄り道を無効にする）
         this.detourCities = null; // 寄り道都市の選択肢（3つ）
         this.detourCity = null; // 到着した寄り道都市
         this.selectedDetourIndex = 0; // 寄り道選択インデックス
@@ -87,6 +88,7 @@ class GameState {
         this.visitedCities.clear();
         this.canSelectDestination = true;
         this.isDetourModalOpen = false;
+        this.isJustArrived = false; // 到着直後フラグをリセット
         this.detourCities = null;
         this.detourCity = null;
         this.selectedDetourIndex = 0;
