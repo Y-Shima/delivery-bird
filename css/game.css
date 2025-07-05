@@ -133,27 +133,35 @@
     font-weight: bold;
 }
 
-.score-item.meter-item {
+/* TIME表示 */
+.time-item {
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
     margin-bottom: 20px;
 }
 
-.label {
-    color: #FFD700;
+.time-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 8px;
 }
 
-/* 180段階の時間メーター */
-.time-meter-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
+.time-header .label {
+    color: #FFD700;
+    font-size: 18px;
+    font-weight: bold;
 }
 
+#time-display {
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    text-align: right;
+}
+
+/* 時間メーター */
 .time-meter {
-    flex: 1;
     height: 20px;
     background: rgba(255, 255, 255, 0.2);
     border-radius: 10px;
@@ -167,21 +175,34 @@
     background: linear-gradient(90deg, #32CD32, #FFD700, #FF4444);
     transition: width 1s ease;
     border-radius: 10px;
+    width: 100%;
 }
 
-#time-display {
-    font-size: 16px;
-    font-weight: bold;
+/* SPEED表示 */
+.speed-item {
+    flex-direction: column;
+    align-items: stretch;
+    margin-bottom: 20px;
+}
+
+.speed-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.speed-header .label {
     color: #FFD700;
-    min-width: 50px;
-    text-align: right;
+    font-size: 18px;
+    font-weight: bold;
 }
 
 /* 5段階スピードメーター（ドット表示） */
 .speed-meter {
     display: flex;
     gap: 8px;
-    justify-content: center;
+    justify-content: flex-end;
 }
 
 .speed-dot {
