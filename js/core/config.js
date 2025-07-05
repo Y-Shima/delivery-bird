@@ -23,7 +23,7 @@ const GAME_MODES = {
         id: 'beginner',
         enemyMultiplier: 1,
         showCountryNames: true,
-        saveScore: false
+        saveScore: true
     },
     NORMAL: {
         id: 'normal',

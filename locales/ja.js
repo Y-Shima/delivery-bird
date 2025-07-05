@@ -24,9 +24,9 @@ const LANG_JA = {
     title: {
         modeTitle: "ゲームモード",
         modeBeginner: "ビギナー",
-        modeBeginnerDesc: "国名表示あり・スコア登録なし",
+        modeBeginnerDesc: "国名表示あり",
         modeNormal: "ノーマル",
-        modeNormalDesc: "到着時のみ国名表示・スコア登録あり",
+        modeNormalDesc: "到着時のみ国名表示",
         modeControls: "← → : モード選択",
         pushSpace: "PUSH SPACE"
     },

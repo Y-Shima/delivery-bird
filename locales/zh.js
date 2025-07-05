@@ -24,9 +24,9 @@ const LANG_ZH = {
     title: {
         modeTitle: "游戏模式",
         modeBeginner: "初学者",
-        modeBeginnerDesc: "显示国名・不保存分数",
+        modeBeginnerDesc: "显示国名",
         modeNormal: "普通",
-        modeNormalDesc: "仅到达时显示国名・保存分数",
+        modeNormalDesc: "仅到达时显示国名",
         modeControls: "← → : 选择模式",
         pushSpace: "按空格键"
     },

@@ -81,6 +81,12 @@ class UIManager {
         this.updateDestinationSlots();
     }
 
+    // ゲームモード変更時にハイスコアを更新
+    updateHiScoreForMode() {
+        this.gameState.hiScore = this.gameState.loadHiScore();
+        document.getElementById('hi-score').textContent = this.gameState.hiScore;
+    }
+
     updateTimeMeter() {
         const timeLeft = this.gameState.timeLeft;
         const totalTime = GAME_CONFIG.GAME_TIME;

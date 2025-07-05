@@ -124,6 +124,11 @@ class TitleScreen {
         } else {
             currentGameMode = GAME_MODES.NORMAL;
         }
+        
+        // ゲームインスタンスが存在する場合、ハイスコアを更新
+        if (window.deliveryBirdGame && window.deliveryBirdGame.uiManager) {
+            window.deliveryBirdGame.uiManager.updateHiScoreForMode();
+        }
     }
     
     selectLanguage(lang) {

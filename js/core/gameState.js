@@ -32,18 +32,44 @@ class GameState {
         };
         this.enemies = [];
         this.powerups = []; // パワーアップアイテム配列を初期化
+        
+        // 既存スコアの移行処理
+        this.migrateExistingScore();
+        
         this.hiScore = this.loadHiScore();
     }
 
     loadHiScore() {
-        const saved = localStorage.getItem('delivery-bird-hiscore');
+        // 現在のゲームモードに応じてスコアを読み込み
+        const key = this.getHiScoreKey();
+        const saved = localStorage.getItem(key);
         return saved ? parseInt(saved, 10) : 0;
     }
 
     saveHiScore() {
         if (this.score > this.hiScore) {
             this.hiScore = this.score;
-            localStorage.setItem('delivery-bird-hiscore', this.hiScore.toString());
+            const key = this.getHiScoreKey();
+            localStorage.setItem(key, this.hiScore.toString());
+        }
+    }
+
+    getHiScoreKey() {
+        // ゲームモードに応じてキーを決定
+        if (currentGameMode.id === 'beginner') {
+            return 'delivery-bird-hiscore-beginner';
+        } else {
+            return 'delivery-bird-hiscore-normal';
+        }
+    }
+
+    // 既存のノーマルモードスコアをノーマルモード用に移行
+    migrateExistingScore() {
+        const oldScore = localStorage.getItem('delivery-bird-hiscore');
+        if (oldScore && !localStorage.getItem('delivery-bird-hiscore-normal')) {
+            // 既存のスコアをノーマルモード用として保存
+            localStorage.setItem('delivery-bird-hiscore-normal', oldScore);
+            console.log('Migrated existing score to normal mode:', oldScore);
         }
     }
 
@@ -79,6 +105,9 @@ class GameState {
         };
         this.enemies = [];
         this.powerups = []; // パワーアップアイテム配列をリセット
+        
+        // ゲームモードに応じてハイスコアを再読み込み
+        this.hiScore = this.loadHiScore();
     }
 
     // 空いているスロットのインデックスを取得

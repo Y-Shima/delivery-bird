@@ -24,9 +24,9 @@ const LANG_EN = {
     title: {
         modeTitle: "Game Mode",
         modeBeginner: "Beginner",
-        modeBeginnerDesc: "Country names shown・No score saving",
+        modeBeginnerDesc: "Country names shown",
         modeNormal: "Normal",
-        modeNormalDesc: "Country names on arrival only・Score saving",
+        modeNormalDesc: "Country names on arrival only",
         modeControls: "← → : Select Mode",
         pushSpace: "PUSH SPACE"
     },
